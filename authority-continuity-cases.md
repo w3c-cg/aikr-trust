@@ -16,7 +16,7 @@ may be buggy, confused or adversarially influenced, and may hold several
 authority sources at once. The adversary cannot forge the relationship
 evidence or make a valid verifier accept a non-monotonic transition;
 compromise of the verifier, the cryptographic root of trust or the
-initial bootstrap is out of scope [2, §2].
+initial bootstrap is out of scope [2, §2, Threat Model and Scope].
 
 Under this model an executor can act arbitrarily within its own step,
 but what the next verifier accepts as valid authority is never wider
@@ -27,11 +27,14 @@ than what the executor received.
 The claims below are about accepted authority within a lineage, not
 about physical effects. The model does not claim that an executor
 cannot attempt an operation outside its authority; it claims that such
-an operation cannot be accepted as a valid continuation [2, Thm. 6].
+an operation cannot be accepted as a valid continuation [2, Theorem 6,
+"Confused deputy is impossible under PIC"].
 Protected effects must pass through a mediated path, and effects must
-be attributed to the lineage that caused them [5, Assumptions 1–2].
+be attributed to the lineage that caused them [5, Assumption 1,
+"Complete mediation"; Assumption 2, "Causal attribution"].
 Whether an executor may open a new lineage with its own authority is an
-origination question outside the continuity invariant [1, §Limitations].
+origination question outside the continuity invariant [1, §IV.A,
+Limitations].
 
 ## A formal model for the scope variant of C9
 
@@ -39,12 +42,13 @@ PIC (Provenance Identity Continuity) models authority continuity as a
 property of the execution lineage:
 
 - the origin authority context C₀ bounds every later step: Cₙ ⊆ C₀
-  [2, Thm. 1];
+  [2, Theorem 1, "PIC Safety"];
 - each hop proves it is a valid continuation of its predecessor
   (Proof of Relationship);
 - ordinary continuation never expands authority, Cᵢ₊₁ ⊆ Cᵢ; any
   widening is an explicit, separately authorised transition, never an
-  ordinary hop [4, Prop. 2];
+  ordinary hop [4, Proposition 2, "Conservative ordinary-join
+  authority"];
 - continuity holds transitively as the composition of valid hops
   (Proof of Continuity).
 
@@ -65,12 +69,13 @@ send official email. C emails Alice's document.
 - **With the amendment.** The send causally depends on Alice's data and
   on Bob's mandate, so it is a join of two lineages. An ordinary join is
   bounded by the intersection of its parents' authority, C(e) ⊆
-  ⋂ C(p) [4, Prop. 2], which here contains neither read nor send.
+  ⋂ C(p) [4, Proposition 2], which here contains neither read nor send.
   Combining them is admissible only as an explicit, separately
   authorised composition.
 - **Resolves.** The confused deputy. Within the model, under complete
   mediation and causal attribution, the effect cannot be accepted
-  [2, Thm. 6; 5, Cor.]. A buggy deputy may still attempt it; the result
+  [2, Theorem 6; 5, Corollary 2, "Exclusion of the confused deputy"].
+  A buggy deputy may still attempt it; the result
   concerns acceptance, not attempt.
 
 ## Proposed case: a successor that does not exist when the step is emitted
@@ -86,8 +91,9 @@ instantiated after A has emitted the step.
   Whichever executor takes the step must prove that its concrete step
   validly continues A's accepted step, under the authority and
   constraints A established; admissibility is evaluated by the receiving
-  side at acceptance time, not by A at emission time [1, §I; 5, §8.2;
-  6, Prover and Verifier, "Delegating the Future"].
+  side at acceptance time, not by A at emission time [1, §I; 5, §8.2,
+  Extended valid transition; 6, Prover and Verifier, "Delegating the
+  Future"].
 - **Resolves.** The N+1 Unknown Executor problem [1].
 
 ## Proposed case: authority that depends on a future fact (open)
@@ -98,9 +104,11 @@ is confirmed. When X grants the mandate, no report exists.
 - **Current draft.** A mandate carries a scope and a value limit, fixed
   at grant time: the exception is refused or granted too broadly.
 - **Status.** PIC identifies this as the N+1 Outcome on Unknown Facts
-  problem and leaves its treatment to future work [5, §Conclusion].
+  problem and leaves its treatment to future work [5, §19, Limitations
+  and Future Work].
   Evidence monotonicity gives a partial guarantee: withholding evidence
-  can never turn a rejection into an admission [5, App. A]. A full
+  can never turn a rejection into an admission [5, Appendix A, Worked
+  Example]. A full
   treatment needs a representation of admissible future outcomes before
   their witnesses exist. Proposed for group D as an open item.
 
@@ -130,8 +138,8 @@ continuation of request B carrying authority from request A.
    Applications (NCA 2026), 10–13 November 2026.
    <https://www.nca-ieee.org/2026/>
 2. Gallo, N. *Proof-of-Continuity: A Temporal Model for Authority
-   Propagation in Distributed Systems and AI Agents*. arXiv:2607.08906,
-   July 2026. <https://arxiv.org/abs/2607.08906>
+   Propagation in Distributed Systems and AI Agents*. Version 3, Zenodo,
+   9 July 2026. <https://doi.org/10.5281/zenodo.21285112>
 3. Gallo, N. *PIC Lean Verification*. Lean 4 formalization of the
    definitions and theorems of [2].
    <https://github.com/ngallo/pic-model/tree/main/draft/0.1/pic-model-math/pic-lean>
