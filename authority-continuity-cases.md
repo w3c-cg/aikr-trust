@@ -5,7 +5,7 @@ review by the AI KR CG. Case numbering is left to the editors.*
 
 *Contributor's interest: the author is the editor of the PIC
 specifications, stewarded by Nitro Agility S.r.l. PIC is published under
-CC BY 4.0 and is not a standard.*
+CC BY 4.0 at <https://pic-protocol.org/> and is not a standard.*
 
 ## Threat model
 
@@ -142,3 +142,5 @@ continuation of request B carrying authority from request A.
    Authority*. Zenodo, 25 September 2026.
    <https://doi.org/10.5281/zenodo.23102206>
 6. PIC Specification 0.2. <https://github.com/pic-protocol/pic-spec>
+7. PIC Protocol project site, with the specification set and the
+   problem statements. <https://pic-protocol.org/>
