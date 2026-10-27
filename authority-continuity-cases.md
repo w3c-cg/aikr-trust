@@ -28,11 +28,10 @@ The claims below are about accepted authority within a lineage, not
 about physical effects. The model does not claim that an executor
 cannot attempt an operation outside its authority; it claims that such
 an operation cannot be accepted as a valid continuation [2, Theorem 6,
-"Confused deputy is impossible under PIC"].
-Protected effects must pass through a mediated path, and effects must
-be attributed to the lineage that caused them [5, Assumption 1,
-"Complete mediation"; Assumption 2, "Causal attribution"].
-Whether an executor may open a new lineage with its own authority is an
+"Confused deputy is impossible under PIC"]. Protected effects must pass
+through a mediated path, and effects must be attributed to the lineage
+that caused them [5, Assumption 1, "Complete mediation"; Assumption 2,
+"Causal attribution"]. Whether an executor may open a new lineage with its own authority is an
 origination question outside the continuity invariant [1, §IV.A,
 Limitations].
 
@@ -41,11 +40,12 @@ Limitations].
 PIC (Provenance Identity Continuity) models authority continuity as a
 property of the execution lineage:
 
-- the origin authority context C₀ bounds every later step: Cₙ ⊆ C₀
+- the origin authority context `C_0` bounds every later step:
+  `C_n ⊆ C_0`
   [2, Theorem 1, "PIC Safety"];
 - each hop proves it is a valid continuation of its predecessor
   (Proof of Relationship);
-- ordinary continuation never expands authority, Cᵢ₊₁ ⊆ Cᵢ; any
+- ordinary continuation never expands authority, `C_{i+1} ⊆ C_i`; any
   widening is an explicit, separately authorised transition, never an
   ordinary hop [4, Proposition 2, "Conservative ordinary-join
   authority"];
@@ -68,15 +68,16 @@ send official email. C emails Alice's document.
   is, so the combination is left to the relying party's policy.
 - **With the amendment.** The send causally depends on Alice's data and
   on Bob's mandate, so it is a join of two lineages. An ordinary join is
-  bounded by the intersection of its parents' authority, C(e) ⊆
-  ⋂ C(p) [4, Proposition 2], which here contains neither read nor send.
+  bounded by the intersection of its parents' authority,
+  `C(e) ⊆ C(p)` for every parent `p` [4, Proposition 2], which here
+  contains neither read nor send.
   Combining them is admissible only as an explicit, separately
   authorised composition.
 - **Resolves.** The confused deputy. Within the model, under complete
   mediation and causal attribution, the effect cannot be accepted
   [2, Theorem 6; 5, Corollary 2, "Exclusion of the confused deputy"].
-  A buggy deputy may still attempt it; the result
-  concerns acceptance, not attempt.
+  A buggy deputy may still attempt it; the result concerns acceptance,
+  not attempt.
 
 ## Proposed case: a successor that does not exist when the step is emitted
 
@@ -105,18 +106,17 @@ is confirmed. When X grants the mandate, no report exists.
   at grant time: the exception is refused or granted too broadly.
 - **Status.** PIC identifies this as the N+1 Outcome on Unknown Facts
   problem and leaves its treatment to future work [5, §19, Limitations
-  and Future Work].
-  Evidence monotonicity gives a partial guarantee: withholding evidence
-  can never turn a rejection into an admission [5, Appendix A, Worked
-  Example]. A full
-  treatment needs a representation of admissible future outcomes before
-  their witnesses exist. Proposed for group D as an open item.
+  and Future Work]. Evidence monotonicity gives a partial guarantee:
+  withholding evidence can never turn a rejection into an admission
+  [5, Appendix A, Worked Example]. A full treatment needs a
+  representation of admissible future outcomes before their witnesses
+  exist. Proposed for group D as an open item.
 
 ## Proposed case: authority mixing across concurrent executions
 
 As in S4, many instances of A run in parallel. A serves two customers'
-requests concurrently, with authority contexts C_A = {refund order 1}
-and C_B = {refund order 2}. A bug in one instance constructs the
+requests concurrently, with authority contexts `C_A = {refund order 1}`
+and `C_B = {refund order 2}`. A bug in one instance constructs the
 continuation of request B carrying authority from request A.
 
 - **Current draft.** As C7 states, B checks the mandate against the
@@ -124,7 +124,7 @@ continuation of request B carrying authority from request A.
   legitimately held by A, so a check of the individual artefacts
   passes. S4 is marked Gap for instance attribution in the coverage
   matrix.
-- **With the amendment.** The mixed context C′ is not a subset of C_B,
+- **With the amendment.** The mixed context `C'` is not a subset of `C_B`,
   so it is not a valid continuation of request B's lineage, whatever
   A's internal state. B does not rely on A's internal correctness; it
   verifies the continuation against the lineage [1, §I].
