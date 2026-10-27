@@ -40,9 +40,8 @@ Limitations].
 PIC (Provenance Identity Continuity) models authority continuity as a
 property of the execution lineage:
 
-- the origin authority context `C_0` bounds every later step:
-  `C_n ⊆ C_0`
-  [2, Theorem 1, "PIC Safety"];
+- the origin authority context `C_0` bounds every later step,
+  `C_n ⊆ C_0` [2, Theorem 1, "PIC Safety"];
 - each hop proves it is a valid continuation of its predecessor
   (Proof of Relationship);
 - ordinary continuation never expands authority, `C_{i+1} ⊆ C_i`; any
@@ -70,9 +69,8 @@ send official email. C emails Alice's document.
   on Bob's mandate, so it is a join of two lineages. An ordinary join is
   bounded by the intersection of its parents' authority,
   `C(e) ⊆ C(p)` for every parent `p` [4, Proposition 2], which here
-  contains neither read nor send.
-  Combining them is admissible only as an explicit, separately
-  authorised composition.
+  contains neither read nor send. Combining them is admissible only as
+  an explicit, separately authorised composition.
 - **Resolves.** The confused deputy. Within the model, under complete
   mediation and causal attribution, the effect cannot be accepted
   [2, Theorem 6; 5, Corollary 2, "Exclusion of the confused deputy"].
