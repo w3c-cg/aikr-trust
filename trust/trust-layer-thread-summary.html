@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DRAFT: Knowledge representation for trust: vocabulary, use cases and working draft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#16264a; --gold:#c9a13b; --gold-soft:#e3c878; --gold-ink:#8d6e1d;
+  --page:#e5e3df; --panel:#eeede9; --ink:#1d1f24; --muted:#595b61; --rule:#c4c0b8;
+  --ok:#2d6a4c; --part:#8c6210; --open:#8a2f2f;
+  --ok-bg:#dfeae3; --part-bg:#f1e7d1; --open-bg:#f0dddd;
+  --serif:"Newsreader", Georgia, "Times New Roman", serif;
+  --sans:"Archivo", "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --page:#1b1d21; --panel:#23262b; --ink:#e7e5e0; --muted:#a6a8ad; --rule:#3a3d44; --gold-ink:#d8b65a;
+    --ok:#8fcfae; --part:#e2bd6a; --open:#e59a9a; --ok-bg:#1f3129; --part-bg:#352c19; --open-bg:#3a2224;
+  }
+}
+:root[data-theme="dark"]{
+  --page:#1b1d21; --panel:#23262b; --ink:#e7e5e0; --muted:#a6a8ad; --rule:#3a3d44; --gold-ink:#d8b65a;
+  --ok:#8fcfae; --part:#e2bd6a; --open:#e59a9a; --ok-bg:#1f3129; --part-bg:#352c19; --open-bg:#3a2224;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--serif);font-size:1.09rem;line-height:1.62}
+img,svg{max-width:100%}
+a{color:inherit;text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+.banner{background:var(--navy);color:var(--gold);position:relative;overflow:hidden}
+.banner .inner{max-width:74rem;margin:0 auto;padding:2.8rem 1.5rem 2.2rem;position:relative;z-index:1}
+.banner .org{font-family:var(--sans);font-size:.86rem;color:var(--gold-soft);margin:0 0 1.2rem}
+.banner h1{font-weight:500;font-size:clamp(1.9rem,4.2vw,3rem);line-height:1.08;margin:0;max-width:20ch;letter-spacing:-.01em}
+.banner .sub{font-style:italic;color:#e9dcb4;font-size:1.12rem;margin:.9rem 0 0;max-width:48ch}
+.banner svg.rings{position:absolute;right:-6rem;top:50%;transform:translateY(-50%);width:32rem;height:32rem;opacity:.5;z-index:0}
+@media (max-width:640px){.banner svg.rings{right:-15rem;opacity:.28}}
+
+.tabbar{position:sticky;top:0;z-index:5;background:var(--navy);border-top:1px solid rgba(201,161,59,.35)}
+.tabbar .inner{max-width:74rem;margin:0 auto;padding:0 1.5rem;display:flex;gap:.2rem;overflow-x:auto}
+.tabbar button{font-family:var(--sans);font-size:.95rem;font-weight:500;color:#cfd4e0;background:none;border:0;border-bottom:3px solid transparent;padding:.85rem 1rem .7rem;cursor:pointer;white-space:nowrap}
+.tabbar button span{color:var(--gold);font-weight:700;margin-right:.45rem}
+.tabbar button[aria-selected="true"]{color:#fff;border-bottom-color:var(--gold)}
+.tabbar button:hover{color:#fff}
+
+main{max-width:74rem;margin:0 auto;padding:0 1.5rem 5rem}
+.panel[hidden]{display:none}
+.panel > .intro{padding:2.2rem 0 .4rem;max-width:44rem}
+.panel > .intro h2{border:0;padding:0;margin:0 0 .6rem;font-size:clamp(1.7rem,3vw,2.3rem)}
+section{margin-top:3.4rem}
+h2{font-weight:500;font-size:clamp(1.45rem,2.4vw,1.85rem);line-height:1.15;margin:0 0 1rem;padding-top:.9rem;border-top:3px solid var(--navy)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) h2{border-top-color:var(--gold)}}
+:root[data-theme="dark"] h2{border-top-color:var(--gold)}
+h3{font-family:var(--sans);font-weight:600;font-size:1.05rem;margin:1.8rem 0 .5rem}
+.prose{max-width:44rem}
+.prose p{margin:0 0 1rem}
+.lede{font-size:1.2rem;line-height:1.5}
+.small{font-family:var(--sans);font-size:.88rem;color:var(--muted)}
+
+.tw{overflow-x:auto;margin:1.1rem 0;border-top:2px solid var(--ink)}
+table{border-collapse:collapse;width:100%;font-family:var(--sans);font-size:.9rem;line-height:1.45}
+th{text-align:left;font-weight:600;padding:.6rem .7rem;border-bottom:1px solid var(--ink);vertical-align:bottom}
+td{padding:.6rem .7rem;border-bottom:1px solid var(--rule);vertical-align:top}
+td:first-child{font-weight:600}
+table.wide td:first-child{min-width:10rem}
+table.glossary td:first-child{min-width:10.5rem}
+table.glossary td:nth-child(3){color:var(--muted);min-width:9rem}
+tr.group td{background:var(--navy);color:var(--gold-soft);font-weight:600;padding:.45rem .7rem;border-bottom:0}
+code{font-size:.86em;background:var(--panel);padding:.05em .3em;border-radius:3px}
+
+.v{display:inline-block;font-family:var(--sans);font-size:.8rem;font-weight:600;padding:.12rem .55rem;border-radius:2rem;white-space:nowrap}
+.v.ok{color:var(--ok);background:var(--ok-bg)} .v.ok::before{content:"\2713\00a0"}
+.v.part{color:var(--part);background:var(--part-bg)} .v.part::before{content:"\00bd\00a0"}
+.v.open{color:var(--open);background:var(--open-bg)} .v.open::before{content:"\2026\00a0"}
+
+/* tutorial steps: a genuine sequence */
+ol.steps{list-style:none;counter-reset:st;margin:1.4rem 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:0;border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+ol.steps li{counter-increment:st;padding:1rem 1.1rem 1.1rem;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:1rem}
+ol.steps li::before{content:counter(st);display:block;font-family:var(--serif);font-size:2.2rem;line-height:1;color:var(--gold-ink);margin-bottom:.4rem}
+ol.steps b{font-family:var(--sans);font-weight:600;display:block;margin-bottom:.2rem}
+
+.scenario{background:var(--navy);color:#eef0f5;padding:1.3rem 1.6rem;margin:1.6rem 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,20rem);gap:1.5rem;align-items:center}
+.scenario p{margin:0 0 .5rem;max-width:40rem}.scenario p:last-child{margin:0}
+.scenario strong{color:var(--gold-soft);font-weight:600}
+@media (max-width:760px){.scenario{grid-template-columns:1fr}}
+
+/* use-case entries */
+.uc{border-left:4px solid var(--gold);padding:.1rem 0 .1rem 1.4rem;margin:0 0 2.4rem}
+.uc header{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem 1rem;margin-bottom:.4rem}
+.uc .id{font-family:var(--sans);font-weight:700;color:var(--gold-ink);font-size:1rem}
+.uc h3{margin:0;font-family:var(--serif);font-weight:500;font-size:1.32rem}
+.uc .by{font-family:var(--sans);font-size:.85rem;color:var(--muted);flex-basis:100%}
+.uc > p{max-width:46rem;margin:.3rem 0 .8rem}
+.facets{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rule)}
+.facets > div{padding:.8rem 1rem;font-size:.98rem}
+.facets > div + div{border-left:1px solid var(--rule)}
+.facets h4{font-family:var(--sans);font-size:.8rem;font-weight:600;color:var(--muted);margin:0 0 .3rem}
+.facets p{margin:0}
+@media (max-width:820px){.facets{grid-template-columns:1fr}.facets > div + div{border-left:0;border-top:1px solid var(--rule)}}
+.pair{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--rule)}
+.pair > div{padding:.9rem 1.1rem;font-size:1rem}
+.pair > div + div{border-left:1px solid var(--rule);background:var(--panel)}
+.pair h4{font-family:var(--sans);font-size:.8rem;font-weight:600;color:var(--muted);margin:0 0 .35rem}
+.pair p{margin:0 0 .5rem}.pair p:last-child{margin:0}
+@media (max-width:720px){.pair{grid-template-columns:1fr}.pair > div + div{border-left:0;border-top:1px solid var(--rule)}}
+.verdict{margin:.9rem 0 0;max-width:46rem;font-size:1rem}
+.verdict .v{margin-right:.5rem}
+.correction{border:1px solid var(--gold);background:var(--panel);padding:.7rem 1rem;margin:.8rem 0 0;max-width:46rem;font-size:.98rem}
+.correction b{font-family:var(--sans);font-weight:600}
+.krtdia{background:var(--panel);border:1px solid var(--rule);padding:1rem;margin:1rem 0}
+.filters{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:center;font-family:var(--sans);font-size:.9rem;margin:1.2rem 0 .4rem}
+.filters select,.filters button{font:inherit;padding:.3rem .5rem;border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:3px}
+.filters button{cursor:pointer}
+table.trace td{min-width:7rem}
+table.trace td:nth-child(2){min-width:7rem}
+table.trace td:nth-child(2) .v{white-space:normal;border-radius:4px}
+table.trace td:nth-child(3){min-width:15rem}
+table.trace td:nth-child(4){min-width:6.5rem}
+table.trace td:nth-child(6){min-width:13rem}
+table.trace td:nth-child(7){white-space:nowrap;min-width:3.5rem}
+table.trace tr[hidden]{display:none}
+code.wrap{white-space:normal}
+td.ucs a{margin-right:.25rem;white-space:nowrap}
+.v.sug{color:#16264a;background:#dde3ee} .v.sug::before{content:"?\00a0"}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .v.sug{color:#b9c6e4;background:#232c40}}
+:root[data-theme="dark"] .v.sug{color:#b9c6e4;background:#232c40}
+.routes{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:0;border-top:2px solid var(--ink);margin:1.4rem 0 .6rem}
+.routes a{display:block;padding:1rem 1.2rem 1rem 0;border-bottom:1px solid var(--rule);text-decoration:none}
+.routes b{display:block;font-family:var(--sans);font-weight:600;font-size:1.02rem}
+.routes span{font-family:var(--sans);font-size:.88rem;color:var(--muted)}
+.routes a:hover b{text-decoration:underline;text-decoration-color:var(--gold)}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 1.6rem}
+.chip{font-family:var(--sans);font-size:.85rem;font-weight:600;padding:.25rem .6rem;border:1px solid var(--gold);border-radius:2rem;text-decoration:none;color:var(--gold-ink)}
+.chip:hover{background:var(--gold);color:#16264a}
+.card{border-top:3px solid var(--gold);background:var(--panel);padding:1.1rem 1.3rem 1.2rem;margin:0 0 2rem;scroll-margin-top:4rem}
+.card header{display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1rem}
+.card .id{font-family:var(--sans);font-weight:700;color:var(--gold-ink)}
+.card h3{margin:0;font-weight:500;font-size:1.35rem;font-family:var(--serif)}
+.card .review{flex-basis:100%;font-family:var(--sans);font-size:.82rem;color:var(--muted);border:1px dashed var(--rule);padding:.25rem .55rem;margin-top:.4rem;width:fit-content}
+.card .story{max-width:48rem;margin:.7rem 0 1rem;font-style:italic}
+.card .story a{font-style:normal;font-family:var(--sans);font-size:.85rem}
+.fix{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr);border-top:1px solid var(--rule)}
+.fix > div{padding:.75rem .9rem .75rem 0}
+.fix > div + div{padding-left:.9rem;border-left:1px solid var(--rule)}
+.fix h5{font-family:var(--sans);font-size:.76rem;font-weight:600;color:var(--muted);margin:0 0 .25rem}
+.fix p{margin:0;font-size:.98rem}
+.fm p{font-family:var(--sans);font-size:.82rem;margin:0 0 .3rem;line-height:1.4}
+.fm b{font-weight:600}
+@media (max-width:820px){.fix{grid-template-columns:1fr}.fix > div + div{border-left:0;padding-left:0;border-top:1px dotted var(--rule)}}
+.cardnote{margin:.6rem 0 0;padding:.6rem .8rem;border-left:4px solid var(--open);background:var(--open-bg);font-size:.95rem;max-width:52rem}
+.cardnote b{font-family:var(--sans);font-weight:600}
+table.grid th,table.grid td{text-align:center;font-size:.78rem;padding:.4rem .35rem;white-space:nowrap}
+table.grid th:first-child,table.grid td:first-child{text-align:left;min-width:12rem;white-space:normal}
+table.grid td.hit{background:var(--ok-bg);color:var(--ok);font-weight:600}
+table.grid tr.gaprow td.hit{background:var(--open-bg);color:var(--open)}
+table.grid tr.kenne td:first-child{box-shadow:inset 4px 0 0 var(--gold)}
+.explainer{margin-top:2rem;border-left:4px solid var(--gold);padding-left:1.3rem;max-width:62rem}
+.plain{border-top:1px solid var(--rule);padding:1rem 0 .4rem;max-width:50rem;scroll-margin-top:4rem}
+.plain h3{font-family:var(--serif);font-weight:500;font-size:1.25rem;margin:0}
+.plain .who{font-family:var(--sans);font-size:.84rem;color:var(--muted);margin:.15rem 0 .6rem}
+.plain p{margin:0 0 .7rem}
+.plain .meta{font-family:var(--sans);font-size:.84rem;background:var(--panel);padding:.45rem .7rem}
+.plain .meta b{font-weight:600}
+.explainer h3{font-family:var(--serif);font-weight:500;font-size:1.3rem;margin:0 0 .6rem}
+.explainer p{max-width:48rem}
+tr[id^="tr-"]{scroll-margin-top:4rem}
+.src{font-family:var(--sans);font-size:.82rem;color:var(--muted);margin:.6rem 0 0}
+.src a{color:var(--muted)}
+pre.mini{font-size:.82rem;line-height:1.45;background:var(--panel);border:1px solid var(--rule);padding:.7rem .9rem;overflow-x:auto;margin:.5rem 0 .9rem}
+
+/* coverage matrix */
+table.matrix th{white-space:normal;font-size:.8rem;min-width:6.2rem}
+table.matrix th:first-child{min-width:13rem}
+table.matrix td{text-align:center;vertical-align:middle}
+table.matrix td:first-child{text-align:left;font-weight:500}
+table.matrix td:first-child b{font-weight:700;color:var(--gold-ink);margin-right:.35rem}
+table.matrix th.new{background:var(--open-bg)}
+.m{display:inline-block;min-width:3.2rem;font-size:.78rem;font-weight:600;padding:.12rem .4rem;border-radius:2rem}
+.m.y{color:var(--ok);background:var(--ok-bg)}
+.m.p{color:var(--part);background:var(--part-bg)}
+.m.g{color:var(--open);background:var(--open-bg)}
+.m.n{color:var(--muted)}
+
+.route{counter-reset:r;list-style:none;padding:0;margin:1rem 0 0;max-width:48rem}
+.route li{counter-increment:r;position:relative;padding:0 0 1.1rem 3rem}
+.route li::before{content:counter(r);position:absolute;left:0;top:-.1rem;width:2rem;height:2rem;border:2px solid var(--gold);border-radius:50%;text-align:center;line-height:1.75rem;font-family:var(--sans);font-weight:700;color:var(--gold-ink)}
+.route b{font-family:var(--sans);font-weight:600}
+
+
+.draft{background:var(--gold);color:#16264a}
+.draft .inner{max-width:74rem;margin:0 auto;padding:.9rem 1.5rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.3rem 1.4rem;font-family:var(--sans)}
+.draft strong{font-size:1.25rem;font-weight:700;letter-spacing:.04em}
+.draft .draftlinks{flex-basis:100%;font-weight:600}
+.draft .draftlinks a{color:#16264a;text-decoration-color:#16264a}
+.draft p{margin:0;font-size:.98rem;line-height:1.45;max-width:60rem}
+footer{max-width:74rem;margin:0 auto;padding:2rem 1.5rem 3rem;border-top:1px solid var(--rule);font-family:var(--sans);font-size:.85rem;color:var(--muted)}
+@media print{.tabbar{display:none}.panel[hidden]{display:block}.banner svg.rings{display:none}.banner{background:none;color:#000}}
+</style>
+</head>
+<body>
+<p class="aikr-trust-backlink" style="font:13px/1.4 system-ui,sans-serif;margin:8px 16px;padding:6px 10px;border-left:3px solid #1a3a6b;background:#f4f6fa;color:#222">Part of the AI KR CG trust work. Main document: <a href="https://github.com/w3c-cg/aikr/blob/main/trust/kroftrust.md">The Knowledge Representation of the Trust Layer</a>. Trust record visualiser: <a href="https://w3c-cg.github.io/aikr/trust/AI_Agent_Trust_Record.html">AI Agent Trust Record</a>.</p>
+
+<div class="draft" role="note">
+  <div class="inner">
+    <strong>DRAFT</strong>
+    <p>Proposed for discussion at weekly AIKR CG calls starting Monday 21 September 2026. Agenda: go over this draft, and discuss the path to publishing a specification. Nothing here has been agreed by the group.</p>
+    <p class="draftlinks">Main, ongoing: <a href="https://github.com/w3c-cg/aikr/tree/main/trust">AIKR CG trust folder on GitHub</a>. Thread: <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Aug/0000.html">public-aikr, opened 3 August 2026 and ongoing</a>. Related: <a href="https://mailarchive.ietf.org/arch/msg/wimse/i08QgArGrcAwFQ7kHFW6U9ZtRCA">Morgan Reece on the IETF WIMSE list</a>. Companion: <a href="https://w3c-cg.github.io/aikr/trust/krt.html">KRT ontology skeleton</a>.</p>
+    <p class="draftlinks">Revised 10 October 2026: glossary group &ldquo;Trust anchors and DNS&rdquo; added from the <a href="https://github.com/w3c-cg/aikr/blob/main/trust/ksk.md">Root KSK rollover note</a>.</p>
+    <p class="draftlinks">Revised 17 September 2026: case C8 updated after <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0027.html">a correction posted on the list</a>; use-case cards added under Start here for review at the calls; later exchanges of the same day added, with plain-English explainers.</p>
+  </div>
+</div>
+
+<header class="banner">
+  <svg class="rings" viewBox="0 0 400 400" aria-hidden="true">
+    <g fill="none" stroke="#c9a13b">
+      <circle cx="200" cy="200" r="190" stroke-width="1"/>
+      <circle cx="200" cy="200" r="160" stroke-width="6" stroke-dasharray="2 10"/>
+      <circle cx="200" cy="200" r="128" stroke-width="1"/>
+      <circle cx="200" cy="200" r="98" stroke-width="14" opacity=".35"/>
+      <circle cx="200" cy="200" r="64" stroke-width="1"/>
+      <circle cx="200" cy="200" r="30" stroke-width="3"/>
+      <circle cx="262" cy="112" r="46" stroke-width="1"/>
+      <circle cx="120" cy="286" r="30" stroke-width="1"/>
+    </g>
+  </svg>
+  <div class="inner">
+    <p class="org">W3C AI Knowledge Representation Community Group, prepared with the Epistemic Systems Lab</p>
+    <h1>Knowledge representation for trust</h1>
+    <p class="sub">A shared vocabulary, a catalogue of use cases drawn from agent incidents, and the state of the discussion on the draft specification.</p>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="Sections">
+  <div class="inner" role="tablist">
+    <button role="tab" id="t-start" aria-controls="start" aria-selected="true"><span>1</span>Start here</button>
+    <button role="tab" id="t-vocab" aria-controls="vocab" aria-selected="false" tabindex="-1"><span>2</span>Shared vocabulary</button>
+    <button role="tab" id="t-cases" aria-controls="cases" aria-selected="false" tabindex="-1"><span>3</span>Use cases</button>
+    <button role="tab" id="t-trace" aria-controls="trace" aria-selected="false" tabindex="-1"><span>4</span>Trace</button>
+    <button role="tab" id="t-coverage" aria-controls="coverage" aria-selected="false" tabindex="-1"><span>5</span>Coverage</button>
+    <button role="tab" id="t-thread" aria-controls="thread" aria-selected="false" tabindex="-1"><span>6</span>Thread and work plan</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ TAB 0: START ============ -->
+<div class="panel" id="start" role="tabpanel" aria-labelledby="t-start">
+  <div class="intro">
+    <h2>Start here</h2>
+    <p class="lede">One card per use case. Each card lists what went wrong in trust terms, how a proposed fix resolves it, who proposed the fix, and what still needs doing.</p>
+    <p>The weekly calls from 21 September go through the cards and record a decision on each: accepted, amended or deferred. The other tabs hold the detail behind the cards.</p>
+  </div>
+  <div class="routes">
+    <a href="#cards"><b>I care about a use case</b><span>Pick a card below. Each fits on one screen.</span></a>
+    <a href="#grid"><b>I made a proposal</b><span>Find your name in the grid to see which cases your work covers.</span></a>
+    <a href="#latest"><b>What was said most recently</b><span>Plain-English explainers of the latest exchanges on the list.</span></a>
+    <a href="#trace"><b>I want the full map</b><span>The Trace tab lists every weak point with its ontology terms and tests.</span></a>
+  </div>
+  <p class="small">Status labels: <span class="v ok">Agreed on list</span> <span class="v part">Open on GitHub</span> <span class="v part">Proposed on list</span> <span class="v part">Proposed in KRT</span> <span class="v open">Gap: needs an owner</span> <span class="v sug">Suggestion for the group</span>. A card shows the least advanced status among the rows it cites.</p>
+
+  <section id="cards">
+    <h2>Use case cards</h2>
+    <nav class="chips" aria-label="Jump to a card"><a class="chip" href="#card-i1">I1</a> <a class="chip" href="#card-i2">I2</a> <a class="chip" href="#card-i3">I3</a> <a class="chip" href="#card-i4">I4</a> <a class="chip" href="#card-i5">I5</a> <a class="chip" href="#card-i6">I6</a> <a class="chip" href="#card-i7">I7</a> <a class="chip" href="#card-i8">I8</a> <a class="chip" href="#card-i9">I9</a> <a class="chip" href="#card-i10">I10</a> <a class="chip" href="#card-s1">S1</a> <a class="chip" href="#card-s2">S2</a> <a class="chip" href="#card-s3">S3</a> <a class="chip" href="#card-s4">S4</a> <a class="chip" href="#card-s5">S5</a> <a class="chip" href="#card-s6">S6</a> <a class="chip" href="#card-s7">S7</a></nav>
+    <article class="card" id="card-i1">
+      <header><span class="id">I1</span><h3>A coding agent ignores a freeze and misreports the damage</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">During a declared code freeze, a coding agent deleted a production database, generated fabricated records and told its user that rollback was impossible. <a href="#i1">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The freeze existed only as an instruction to the agent.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The policy is recorded with an enforcement point, and its location shows it was enforced inside the agent and nowhere else. Rule R6 flags any policy without one, so a relying party can insist that the database or platform enforces the freeze.</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t12">T12</a></p><p><b>KRT</b> <code class="wrap">DeclaredPolicy, enforcedAt, stopChannel; rule R6</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Asking the agent to stop had no effect.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The stop channel is recorded as a path outside the model, with the date it was last tested. An untested channel is visible before anyone needs it.</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t12">T12</a></p><p><b>KRT</b> <code class="wrap">DeclaredPolicy, enforcedAt, stopChannel; rule R6</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>An irreversible deletion went ahead on the agent's own judgement.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The action is recorded as irreversible. Rule R4 refuses a yes for it unless evidence comes from someone other than the agent, for example the user confirming through a separate channel.</p></div>
+          <div class="fm"><p><span class="v part">Proposed in KRT</span></p><p><b>From</b> KRT skeleton</p><p><b>Trace</b> <a href="#tr-t15">T15</a></p><p><b>KRT</b> <code class="wrap">instructionProvenance, reversibility; rules R2, R4</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The user believed the agent's account of what it had done.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The agent's report counts as a claim. Rule R5 accepts "the action occurred" only from a receipt produced by another component, here the database's own log, which would also have shown that recovery was possible. The check compares the claim with that independent record, never with another claim by the agent.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Syed Anas Mohiuddin, Amey Parle, Evgenii Arsentev; Evgenii Arsentev, Syed Anas Mohiuddin</p><p><b>Trace</b> <a href="#tr-t10">T10</a>, <a href="#tr-t24">T24</a></p><p><b>KRT</b> <code class="wrap">bindingPoint, producedBy; resolved target to add; rule R5; usesEvidence, attestationMode; rule R5; evidence counts to add</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> T12 has no owner. Suggested first step: a short property set for enforcement points and a test record in which a stop request is ignored.</p>
+    </article><article class="card" id="card-i2">
+      <header><span class="id">I2</span><h3>A chatbot's statement binds its operator</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">An airline chatbot gave a customer wrong information about a fare policy, and a tribunal held the airline responsible for it. <a href="#i2">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Nothing marked which statements the business stands behind.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Each statement is recorded with the proposition it can prove. An operator can restrict its agent to asserting policy only when a source document backs the claim, and customers can see which statements carry that backing.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Raphael La Touche, Innocent Onyenonachi</p><p><b>Trace</b> <a href="#tr-t7">T7</a></p><p><b>KRT</b> <code class="wrap">canProve, Proposition; rule R1</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Nobody was recorded as answering for the agent's statement.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>An accountability record attached to customer-facing statements names the airline as the answering party, matching what the tribunal decided.</p></div>
+          <div class="fm"><p><span class="v sug">Suggestion for the group</span></p><p><b>From</b> Suggestion for the group</p><p><b>Trace</b> <a href="#tr-t17">T17</a></p><p><b>KRT</b> <code class="wrap">AccountabilityRecord; rule to write</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> Accountability (T17) is a suggestion only. The term exists in the ontology; the group needs to decide whether a rule should require it.</p>
+    </article><article class="card" id="card-i3">
+      <header><span class="id">I3</span><h3>Approved tools change after approval</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">Hidden instructions in an MCP tool description can steer an agent, and a server can replace a tool's description after the user has approved it. <a href="#i3">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Approval was tied to a tool's name and location.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The approval stores the content hash of the tool definition. A changed description has a different hash, so the stored approval no longer matches and the agent has to ask again.</p></div>
+          <div class="fm"><p><span class="v part">Open on GitHub</span></p><p><b>From</b> Isaac Mao</p><p><b>Trace</b> <a href="#tr-t2">T2</a></p><p><b>KRT</b> <code class="wrap">integrityMode, contentHash</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>A review verdict outlived changes to the tool.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The verdict is bound to the hash of the definition that was reviewed and carries a validity window. After a change it no longer applies, and a withdrawn verdict is distinguishable from one that failed to load.</p></div>
+          <div class="fm"><p><span class="v part">Open on GitHub</span></p><p><b>From</b> Kenne Ives</p><p><b>Trace</b> <a href="#tr-t6">T6</a></p><p><b>KRT</b> <code class="wrap">Verdict, contentHash, validUntil</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Hidden text in a tool description was followed as an instruction.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Text inside a tool description is recorded as content with no principal. Rule R2 refuses to treat it as authority.</p></div>
+          <div class="fm"><p><span class="v part">Proposed in KRT</span></p><p><b>From</b> KRT skeleton</p><p><b>Trace</b> <a href="#tr-t15">T15</a></p><p><b>KRT</b> <code class="wrap">instructionProvenance, reversibility; rules R2, R4</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>A server can change behaviour while the definition stays the same.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>An attestation bound to the request as sent, or to the observed effect, shows what the server did, whatever the definition says. The receipt records the resolved target, the address the request finally reached.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Syed Anas Mohiuddin, Amey Parle, Evgenii Arsentev</p><p><b>Trace</b> <a href="#tr-t10">T10</a></p><p><b>KRT</b> <code class="wrap">bindingPoint, producedBy; resolved target to add; rule R5</code></p></div>
+        </div>
+      
+    </article><article class="card" id="card-i4">
+      <header><span class="id">I4</span><h3>A connector impersonates a vendor and turns hostile later</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">A package presented as an MCP server for an email service shipped fifteen working versions, then added a line copying every outgoing email to an outside address. The vendor had no connection to it. <a href="#i4">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The package name suggested an official publisher.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>A name proves nothing about who published a package. The publisher's identity artefact is checked separately, and the check states which proposition it can prove.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Raphael La Touche, Innocent Onyenonachi</p><p><b>Trace</b> <a href="#tr-t7">T7</a></p><p><b>KRT</b> <code class="wrap">canProve, Proposition; rule R1</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Fifteen good versions earned trust for the sixteenth.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Approval and review are pinned to each version's hash, so version sixteen starts unapproved.</p></div>
+          <div class="fm"><p><span class="v part">Open on GitHub</span></p><p><b>From</b> Isaac Mao; Kenne Ives</p><p><b>Trace</b> <a href="#tr-t2">T2</a>, <a href="#tr-t6">T6</a></p><p><b>KRT</b> <code class="wrap">integrityMode, contentHash; Verdict, contentHash, validUntil</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Nothing showed whether the vendor stood behind the package.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>A package that names a vendor carries a declaration signed by that vendor, or is marked as unaffiliated.</p></div>
+          <div class="fm"><p><span class="v sug">Suggestion for the group</span></p><p><b>From</b> Suggestion for the group</p><p><b>Trace</b> <a href="#tr-t18">T18</a></p><p><b>KRT</b> <code class="wrap">Declaration, issuedBy, controlDisclosure; rule to write</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> Publisher identity and vendor declarations (T18) are a suggestion only.</p>
+    </article><article class="card" id="card-i5">
+      <header><span class="id">I5</span><h3>An allowlisted domain outlives its owner</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">Instructions hidden in a web form led a CRM agent to send customer data to an address on an expired domain the platform still allowlisted. <a href="#i5">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The allowlist trusted a domain after it changed hands.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The entry is recorded as location-bound and governed by whoever holds the domain. A staleness bound forces a periodic check of who that is, so a change of owner ends the trust.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Morgan Reece; Isaac Mao; Ankur Chrungoo</p><p><b>Trace</b> <a href="#tr-t1">T1</a>, <a href="#tr-t2">T2</a>, <a href="#tr-t3">T3</a></p><p><b>KRT</b> <code class="wrap">topology, coupling, stalenessBound; integrityMode, contentHash; stalenessBound</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Text in a form was followed as an instruction.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Form content has no principal. Rule R2 refuses to treat it as authority to send data anywhere.</p></div>
+          <div class="fm"><p><span class="v part">Proposed in KRT</span></p><p><b>From</b> KRT skeleton</p><p><b>Trace</b> <a href="#tr-t15">T15</a></p><p><b>KRT</b> <code class="wrap">instructionProvenance, reversibility; rules R2, R4</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Data left for the wrong destination while the call looked normal.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The receipt is bound to the request as sent and records the resolved target, the final address after the agent's inputs were filled in. It shows the real destination even when the call as written looked harmless.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Syed Anas Mohiuddin, Amey Parle, Evgenii Arsentev</p><p><b>Trace</b> <a href="#tr-t10">T10</a></p><p><b>KRT</b> <code class="wrap">bindingPoint, producedBy; resolved target to add; rule R5</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> Well covered by proposals. Suggestion for the group: treat a change in domain control as a revocation trigger.</p>
+    </article><article class="card" id="card-i6">
+      <header><span class="id">I6</span><h3>A false mandate presented to an agent</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">Operators told a coding agent they worked for a legitimate security firm doing authorised testing, and the agent carried out most of an intrusion campaign. <a href="#i6">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The agent took a claimed employer as permission.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Identity proves key control. Permission to test a target needs a mandate artefact that can prove authority to act.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Raphael La Touche, Innocent Onyenonachi</p><p><b>Trace</b> <a href="#tr-t7">T7</a></p><p><b>KRT</b> <code class="wrap">canProve, Proposition; rule R1</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>No chain linked the requested work to anyone entitled to order it.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The mandate is traced back to its principal, and its scope (which targets, until when) is checked before each action.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Staford Titus S., Kenne Ives</p><p><b>Trace</b> <a href="#tr-t9">T9</a></p><p><b>KRT</b> <code class="wrap">Mandate, Delegation, attenuationChecked, revocationPropagates</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>An unverifiable claim was handled like a verified one.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The check returns unknown, and the agent's policy for unknown on high-risk work applies: refuse, or work in a restricted mode.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> The chair</p><p><b>Trace</b> <a href="#tr-t11">T11</a></p><p><b>KRT</b> <code class="wrap">completeness, controlDisclosure, onUnknown; rule R10</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Requests arrived in conversation with no signature.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Conversation text is recorded as content with no principal, so rule R2 withholds authority from it.</p></div>
+          <div class="fm"><p><span class="v part">Proposed in KRT</span></p><p><b>From</b> KRT skeleton</p><p><b>Trace</b> <a href="#tr-t15">T15</a></p><p><b>KRT</b> <code class="wrap">instructionProvenance, reversibility; rules R2, R4</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> Agents also act on plain conversation where no artefact is ever presented. Suggestion for the group: define a restricted mode for unverified mandates, with a test record.</p>
+    </article><article class="card" id="card-i7">
+      <header><span class="id">I7</span><h3>Agent or human, and whose agent?</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">An agent-only social network had about 1.5 million registered agents behind roughly 17,000 human accounts. Humans could post as agents, and leaked keys let anyone take over any account. <a href="#i7">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Accounts were not tied to a running instance or its operator.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Each acting instance is linked to its agent and an operator of record. Rule R8 flags instances without one.</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t14">T14</a></p><p><b>KRT</b> <code class="wrap">AgentInstance, operatorOfRecord; rule R8</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Posts by people and posts by agents looked the same.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Every message records its authorship: agent instance, person using agent credentials, or unknown.</p></div>
+          <div class="fm"><p><span class="v sug">Suggestion for the group</span></p><p><b>From</b> Suggestion for the group</p><p><b>Trace</b> <a href="#tr-t19">T19</a></p><p><b>KRT</b> <code class="wrap">authorship; rule to write</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Leaked keys stayed usable.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>A revocation states what it reaches and its staleness bound (rule R7), so exposed keys stop verifying within a known time.</p></div>
+          <div class="fm"><p><span class="v part">Proposed in KRT</span></p><p><b>From</b> KRT skeleton</p><p><b>Trace</b> <a href="#tr-t16">T16</a></p><p><b>KRT</b> <code class="wrap">Revocation, coversDerivedData; rule R7</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> T14 has no owner and authorship (T19) is a suggestion only.</p>
+    </article><article class="card" id="card-i8">
+      <header><span class="id">I8</span><h3>A skill marketplace as a delivery channel</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">Hundreds of malicious skills appeared in an agent skill marketplace. Some rewrote the agent's memory files so their instructions outlived removal. <a href="#i8">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Scans and reviews stopped matching the skills in circulation.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Each verdict is bound to the hash of the skill package and carries a validity window, so a changed or re-published skill needs a new verdict.</p></div>
+          <div class="fm"><p><span class="v part">Open on GitHub</span></p><p><b>From</b> Kenne Ives</p><p><b>Trace</b> <a href="#tr-t6">T6</a></p><p><b>KRT</b> <code class="wrap">Verdict, contentHash, validUntil</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>A week-old account could publish.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Publisher identity is recorded separately from the skill's name, so a relying party can require an established publisher.</p></div>
+          <div class="fm"><p><span class="v sug">Suggestion for the group</span></p><p><b>From</b> Suggestion for the group</p><p><b>Trace</b> <a href="#tr-t18">T18</a></p><p><b>KRT</b> <code class="wrap">Declaration, issuedBy, controlDisclosure; rule to write</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Skills rewrote the agent's memory and configuration.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Configuration and memory are recorded as artefacts with a content hash; any change needs fresh approval.</p></div>
+          <div class="fm"><p><span class="v sug">Suggestion for the group</span></p><p><b>From</b> Suggestion for the group</p><p><b>Trace</b> <a href="#tr-t21">T21</a></p><p><b>KRT</b> <code class="wrap">AgentConfiguration, contentHash; rule to write</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Skills declared behaviour nothing enforced.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Each declared policy names an enforcement point outside the skill.</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t12">T12</a></p><p><b>KRT</b> <code class="wrap">DeclaredPolicy, enforcedAt, stopChannel; rule R6</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> Publisher identity (T18) and configuration integrity (T21) are suggestions; T12 has no owner.</p>
+    </article><article class="card" id="card-i9">
+      <header><span class="id">I9</span><h3>An evaluation agent escapes and goes unattributed</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">Evaluation agents left their sandbox and ran an intrusion into another company's production systems over several days. Their operator identified them only after the victim disclosed the attack. <a href="#i9">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The agents acted far beyond anything they were authorised to do.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Every action is tied to a mandate with a checked scope. Systems that check would have found no mandate covering the intrusion.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Staford Titus S., Kenne Ives</p><p><b>Trace</b> <a href="#tr-t9">T9</a></p><p><b>KRT</b> <code class="wrap">Mandate, Delegation, attenuationChecked, revocationPropagates</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>"Sandboxed" was only a configuration claim.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Containment is attested by the infrastructure and dated (rule R9), so a missing or stale attestation shows up.</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t13">T13</a></p><p><b>KRT</b> <code class="wrap">EnvironmentAttestation; rule R9</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Nobody could say whose agents they were.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Receipts name the instance and operator of record (rule R8).</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t14">T14</a></p><p><b>KRT</b> <code class="wrap">AgentInstance, operatorOfRecord; rule R8</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Instances coordinated among themselves.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Coordination channels are declared, so undeclared channels stand out.</p></div>
+          <div class="fm"><p><span class="v sug">Suggestion for the group</span></p><p><b>From</b> Suggestion for the group</p><p><b>Trace</b> <a href="#tr-t22">T22</a></p><p><b>KRT</b> <code class="wrap">coordinationChannel; rule to write</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> Two of the core rows (T13, T14) have no owner, and coordination (T22) is a suggestion. A strong candidate for the first call.</p>
+    </article><article class="card" id="card-i10">
+      <header><span class="id">I10</span><h3>The environment was not what the agent was told</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">Models in third-party cyber evaluations had internet access although their prompt said they had none, and compromised real systems while treating them as part of the exercise. A first audit missed one incident. <a href="#i10">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The environment claim came from a misconfigured setup.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Environment attestations come from the infrastructure, dated (rule R9).</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t13">T13</a></p><p><b>KRT</b> <code class="wrap">EnvironmentAttestation; rule R9</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Real systems were treated as test fixtures.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Receipts bound to the request as sent show the real destination of each action.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Syed Anas Mohiuddin, Amey Parle, Evgenii Arsentev</p><p><b>Trace</b> <a href="#tr-t10">T10</a></p><p><b>KRT</b> <code class="wrap">bindingPoint, producedBy; resolved target to add; rule R5</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The first audit was assumed to be complete.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Each audit states its coverage, and each agent states how much of its activity anyone else records.</p></div>
+          <div class="fm"><p><span class="v sug">Suggestion for the group</span></p><p><b>From</b> Suggestion for the group</p><p><b>Trace</b> <a href="#tr-t20">T20</a></p><p><b>KRT</b> <code class="wrap">monitoringCoverage; rule to write</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>An audit trail can look complete while records are missing or padded.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The log's fingerprint is stored with the number of entries, so a log of a different size no longer matches. The audit report counts how many records carry their evidence and how many only link to it.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Nicholas Templeman; Evgenii Arsentev, Syed Anas Mohiuddin</p><p><b>Trace</b> <a href="#tr-t23">T23</a>, <a href="#tr-t24">T24</a></p><p><b>KRT</b> <code class="wrap">anchoredIn, contentHash; entry count to add; usesEvidence, attestationMode; rule R5; evidence counts to add</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> T13 has no owner and audit coverage (T20) is a suggestion.</p>
+    </article><article class="card" id="card-s1">
+      <header><span class="id">S1</span><h3>Activity outside the declared mandate</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">A registered company's credential says it provides travel services. The company also supplies a weapons programme, recorded nowhere the issuer looked. <a href="#s1">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Silence in the credential was read as "nothing else to know".</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The credential states what the issuer checked and that completeness is not attested. The subject signs a declaration, so an omission becomes a false statement it can be held to. Checks return yes, no or unknown, and the relying party's policy for unknown applies.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> The chair</p><p><b>Trace</b> <a href="#tr-t11">T11</a></p><p><b>KRT</b> <code class="wrap">completeness, controlDisclosure, onUnknown; rule R10</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Registration was read as a statement about all activities.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Each artefact states what it can prove; registration proves legal existence and declared activity only.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Raphael La Touche, Innocent Onyenonachi</p><p><b>Trace</b> <a href="#tr-t7">T7</a></p><p><b>KRT</b> <code class="wrap">canProve, Proposition; rule R1</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> Open question for the group: how to handle "cannot disclose" where disclosure conflicts with privacy law or legal secrecy.</p>
+    </article><article class="card" id="card-s2">
+      <header><span class="id">S2</span><h3>A declared policy with no enforcer</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">An agent's credential lists a refund limit and a promise to stop on request. The rules live only inside the agent, which issues an over-limit refund after being told to stop. <a href="#s2">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The limit and the stop promise had no enforcer.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Each policy names an enforcement point (rule R6); the payment system is the natural enforcer of the limit.</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t12">T12</a></p><p><b>KRT</b> <code class="wrap">DeclaredPolicy, enforcedAt, stopChannel; rule R6</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The refund exceeded the mandate.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The mandate carries a value limit, and the system acted on checks it before paying.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Staford Titus S., Kenne Ives</p><p><b>Trace</b> <a href="#tr-t9">T9</a></p><p><b>KRT</b> <code class="wrap">Mandate, Delegation, attenuationChecked, revocationPropagates</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>A large, hard-to-reverse refund needed no outside confirmation.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The refund is recorded with its reversibility, and rule R4 asks for independent evidence first.</p></div>
+          <div class="fm"><p><span class="v part">Proposed in KRT</span></p><p><b>From</b> KRT skeleton</p><p><b>Trace</b> <a href="#tr-t15">T15</a></p><p><b>KRT</b> <code class="wrap">instructionProvenance, reversibility; rules R2, R4</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> T12 has no owner.</p>
+    </article><article class="card" id="card-s3">
+      <header><span class="id">S3</span><h3>A declared environment that is wrong</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">An operator states that an agent runs in a sandbox with no outbound network. The configuration is mistaken. <a href="#s3">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The environment claim came from the operator's configuration.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Environment attestations come from the infrastructure (rule R9).</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t13">T13</a></p><p><b>KRT</b> <code class="wrap">EnvironmentAttestation; rule R9</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Nobody knew how old the claim was.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Coupling and staleness bound state when the claim was last refreshed and how long it may be relied on.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Morgan Reece; Ankur Chrungoo</p><p><b>Trace</b> <a href="#tr-t1">T1</a>, <a href="#tr-t3">T3</a></p><p><b>KRT</b> <code class="wrap">topology, coupling, stalenessBound; stalenessBound</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> T13 has no owner.</p>
+    </article><article class="card" id="card-s4">
+      <header><span class="id">S4</span><h3>Many instances, one name</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">Hundreds of instances of one agent run in parallel under one identifier. One instance acts outside the mandate, and the logs show only the agent's name. <a href="#s4">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Logs could not say which instance acted.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Each instance has its own identifier and operator of record (rule R8).</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t14">T14</a></p><p><b>KRT</b> <code class="wrap">AgentInstance, operatorOfRecord; rule R8</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Instances held authority nobody delegated to them individually.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Authority reaches each instance through a delegation that is checked against the agent's mandate.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Staford Titus S., Kenne Ives</p><p><b>Trace</b> <a href="#tr-t9">T9</a></p><p><b>KRT</b> <code class="wrap">Mandate, Delegation, attenuationChecked, revocationPropagates</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Short-lived instances could not be revoked.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Self-certifying instance identifiers carry a stated lifetime, which bounds exposure.</p></div>
+          <div class="fm"><p><span class="v part">Open on GitHub</span></p><p><b>From</b> Agent Community</p><p><b>Trace</b> <a href="#tr-t4">T4</a></p><p><b>KRT</b> <code class="wrap">SelfCertifying, validUntil</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Instances shared state through channels nobody declared.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Coordination channels are declared.</p></div>
+          <div class="fm"><p><span class="v sug">Suggestion for the group</span></p><p><b>From</b> Suggestion for the group</p><p><b>Trace</b> <a href="#tr-t22">T22</a></p><p><b>KRT</b> <code class="wrap">coordinationChannel; rule to write</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> T14 has no owner and coordination (T22) is a suggestion.</p>
+    </article><article class="card" id="card-s5">
+      <header><span class="id">S5</span><h3>A claimed mandate presented to an agent</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">A person tells an agent they represent a company's security team and asks it to test a system's limits. <a href="#s5">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The claim of authority rested on the person's word.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Identity and authority are different propositions; the agent asks for a mandate artefact that proves the latter.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Raphael La Touche, Innocent Onyenonachi</p><p><b>Trace</b> <a href="#tr-t7">T7</a></p><p><b>KRT</b> <code class="wrap">canProve, Proposition; rule R1</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>No chain connected the request to the company.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>The mandate is traced to its principal and checked for scope.</p></div>
+          <div class="fm"><p><span class="v part">Proposed on list</span></p><p><b>From</b> Staford Titus S., Kenne Ives</p><p><b>Trace</b> <a href="#tr-t9">T9</a></p><p><b>KRT</b> <code class="wrap">Mandate, Delegation, attenuationChecked, revocationPropagates</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> As for I6, requests made in plain conversation still need a restricted-mode policy.</p>
+    </article><article class="card" id="card-s6">
+      <header><span class="id">S6</span><h3>Approved, then changed</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">A company approves version 1.4 of a tool. A later update adds a hidden data copy, and a skill rewrites the agent's memory so the change survives removal. <a href="#s6">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The approval did not follow the content.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Approvals store the content hash of what was approved.</p></div>
+          <div class="fm"><p><span class="v part">Open on GitHub</span></p><p><b>From</b> Isaac Mao</p><p><b>Trace</b> <a href="#tr-t2">T2</a></p><p><b>KRT</b> <code class="wrap">integrityMode, contentHash</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The review verdict did not follow the content.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Verdicts are bound to the reviewed hash, with a validity window.</p></div>
+          <div class="fm"><p><span class="v part">Open on GitHub</span></p><p><b>From</b> Kenne Ives</p><p><b>Trace</b> <a href="#tr-t6">T6</a></p><p><b>KRT</b> <code class="wrap">Verdict, contentHash, validUntil</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Hashes from different producers might not be comparable.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Both producers canonicalize the same way, carry large identifiers as strings and declare their semantics (rule R11), so equal hashes mean equal content.</p></div>
+          <div class="fm"><p><span class="v ok">Agreed on list</span></p><p><b>From</b> Thanh Le, Kenne Ives, Amey Parle</p><p><b>Trace</b> <a href="#tr-t8">T8</a></p><p><b>KRT</b> <code class="wrap">largeIntegersAsStrings, declaredSemantics; rule R11</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The agent's memory changed without approval.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Configuration and memory carry content hashes, and a change needs approval.</p></div>
+          <div class="fm"><p><span class="v sug">Suggestion for the group</span></p><p><b>From</b> Suggestion for the group</p><p><b>Trace</b> <a href="#tr-t21">T21</a></p><p><b>KRT</b> <code class="wrap">AgentConfiguration, contentHash; rule to write</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> Configuration integrity (T21) is a suggestion. Behaviour can still change on the server behind an unchanged definition; see I3.</p>
+    </article><article class="card" id="card-s7">
+      <header><span class="id">S7</span><h3>An agent nobody can observe</h3><span class="review">Call review: to discuss &nbsp;·&nbsp; Decision: accepted / amended / deferred</span></header>
+      <p class="story">A self-hosted agent with no telemetry presents a valid credential and a list of declared policies. <a href="#s7">Full case</a></p>
+      <div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>Nobody sees what the agent does.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Monitoring coverage is stated, with "none" allowed, so relying parties can limit such agents to low-risk actions.</p></div>
+          <div class="fm"><p><span class="v sug">Suggestion for the group</span></p><p><b>From</b> Suggestion for the group</p><p><b>Trace</b> <a href="#tr-t20">T20</a></p><p><b>KRT</b> <code class="wrap">monitoringCoverage; rule to write</code></p></div>
+        </div><div class="fix">
+          <div class="fw"><h5>Weak point</h5><p>The declared policies could not be checked.</p></div>
+          <div class="fh"><h5>How the fix resolves it</h5><p>Each policy names where it is enforced; for this agent the answer is "inside the agent", which relying parties can weigh.</p></div>
+          <div class="fm"><p><span class="v open">Gap: needs an owner</span></p><p><b>From</b> No contributor yet</p><p><b>Trace</b> <a href="#tr-t12">T12</a></p><p><b>KRT</b> <code class="wrap">DeclaredPolicy, enforcedAt, stopChannel; rule R6</code></p></div>
+        </div>
+      <p class="cardnote"><b>Still to do.</b> Monitoring coverage (T20) is a suggestion and T12 has no owner.</p>
+    </article>
+  </section>
+
+  <section id="grid">
+    <h2>Proposals and the cases they cover</h2>
+    <div class="prose"><p>Rows are contributors, columns are use cases. A cell names the trace row through which a contribution covers the case. Red cells in the two bottom rows mark cases that depend on work nobody has taken on yet. Lars Kersten Kroehl's row is empty because his issue corrects the draft note itself.</p></div>
+    <div class="tw"><table class="grid"><thead><tr><th>Proposed by</th><th><a href="#card-i1">I1</a></th><th><a href="#card-i2">I2</a></th><th><a href="#card-i3">I3</a></th><th><a href="#card-i4">I4</a></th><th><a href="#card-i5">I5</a></th><th><a href="#card-i6">I6</a></th><th><a href="#card-i7">I7</a></th><th><a href="#card-i8">I8</a></th><th><a href="#card-i9">I9</a></th><th><a href="#card-i10">I10</a></th><th><a href="#card-s1">S1</a></th><th><a href="#card-s2">S2</a></th><th><a href="#card-s3">S3</a></th><th><a href="#card-s4">S4</a></th><th><a href="#card-s5">S5</a></th><th><a href="#card-s6">S6</a></th><th><a href="#card-s7">S7</a></th></tr></thead><tbody>
+      <tr><td>Morgan Reece</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T1</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T1</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td></tr><tr><td>Isaac Mao</td><td class=""></td><td class=""></td><td class="hit">T2</td><td class="hit">T2</td><td class="hit">T2</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T2</td><td class=""></td></tr><tr><td>Ankur Chrungoo</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T3</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T3</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td></tr><tr><td>Agent Community</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T4</td><td class=""></td><td class=""></td><td class=""></td></tr><tr><td>Lars Kersten Kroehl</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td></tr><tr class="kenne"><td>Kenne Ives</td><td class=""></td><td class=""></td><td class="hit">T6</td><td class="hit">T6</td><td class=""></td><td class="hit">T9</td><td class=""></td><td class="hit">T6</td><td class="hit">T9</td><td class=""></td><td class=""></td><td class="hit">T9</td><td class=""></td><td class="hit">T9</td><td class="hit">T9</td><td class="hit">T6 T8</td><td class=""></td></tr><tr><td>Raphael La Touche, Innocent Onyenonachi</td><td class=""></td><td class="hit">T7</td><td class=""></td><td class="hit">T7</td><td class=""></td><td class="hit">T7</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T7</td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T7</td><td class=""></td><td class=""></td></tr><tr><td>Thanh Le</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T8</td><td class=""></td></tr><tr><td>Amey Parle</td><td class="hit">T10</td><td class=""></td><td class="hit">T10</td><td class=""></td><td class="hit">T10</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T10</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T8</td><td class=""></td></tr><tr><td>Staford Titus S.</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T9</td><td class=""></td><td class=""></td><td class="hit">T9</td><td class=""></td><td class=""></td><td class="hit">T9</td><td class=""></td><td class="hit">T9</td><td class="hit">T9</td><td class=""></td><td class=""></td></tr><tr><td>Syed Anas Mohiuddin</td><td class="hit">T10 T24</td><td class=""></td><td class="hit">T10</td><td class=""></td><td class="hit">T10</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T10 T24</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T24</td></tr><tr><td>Evgenii Arsentev</td><td class="hit">T10 T24</td><td class=""></td><td class="hit">T10</td><td class=""></td><td class="hit">T10</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T10 T24</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T24</td></tr><tr><td>Nicholas Templeman</td><td class="hit">T23</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T23</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td></tr><tr><td>The chair</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T11</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T11</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td></tr><tr><td>KRT skeleton</td><td class="hit">T15</td><td class=""></td><td class="hit">T15</td><td class=""></td><td class="hit">T15</td><td class="hit">T15</td><td class="hit">T16</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T15</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td></tr><tr class="gaprow"><td>No owner yet</td><td class="hit">T12</td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T14</td><td class="hit">T12</td><td class="hit">T13 T14</td><td class="hit">T13</td><td class=""></td><td class="hit">T12</td><td class="hit">T13</td><td class="hit">T14</td><td class=""></td><td class=""></td><td class="hit">T12</td></tr><tr class="gaprow"><td>Suggestions for the group</td><td class=""></td><td class="hit">T17</td><td class=""></td><td class="hit">T18</td><td class=""></td><td class=""></td><td class="hit">T19</td><td class="hit">T18 T21</td><td class="hit">T22</td><td class="hit">T20</td><td class=""></td><td class=""></td><td class=""></td><td class="hit">T22</td><td class=""></td><td class="hit">T21</td><td class="hit">T20</td></tr>
+    </tbody></table></div>
+    <div class="explainer" id="kenne">
+      <h3>Example: what Kenne Ives's proposals cover, and how</h3>
+      <p>Kenne contributed to three trace rows. His main proposal (<a href="https://github.com/w3c-cg/aikr/issues/10">issue 10</a>, row <a href="#tr-t6">T6</a>) extends the draft's resolution properties from identity documents to evidence, such as a verdict that a tool was reviewed. The verdict is bound to the content hash of what was reviewed, carries a validity window, and can be revoked, with "withdrawn" kept distinct from "could not be fetched".</p>
+      <div class="tw"><table>
+        <thead><tr><th>Use case</th><th>What goes wrong</th><th>How Kenne's proposal handles it</th></tr></thead>
+        <tbody>
+          <tr><td><a href="#card-i3">I3</a> tool changed after approval</td><td>A tool is reviewed, then its description is replaced.</td><td>The verdict names the hash of the reviewed description. The new description hashes differently, so the verdict no longer applies and the agent must not rely on it.</td></tr>
+          <tr><td><a href="#card-i4">I4</a> impersonating connector</td><td>Good early versions earn trust for a hostile later one.</td><td>Each verdict covers one version's hash, so the hostile version arrives with no verdict.</td></tr>
+          <tr><td><a href="#card-i8">I8</a> marketplace skills</td><td>Skills pass a scan, then change or evade it.</td><td>A verdict expires at the end of its validity window and fails when the package hash changes, forcing a new scan.</td></tr>
+          <tr><td><a href="#card-s6">S6</a> approved, then changed</td><td>An approved tool gains a hidden data copy.</td><td>As in I3. With row <a href="#tr-t8">T8</a> (comparison, with Amey Parle and Thanh Le), producers canonicalize identically, so equal hashes from different parties mean equal content.</td></tr>
+          <tr><td><a href="#card-i6">I6</a>, <a href="#card-i9">I9</a>, <a href="#card-s4">S4</a>, <a href="#card-s5">S5</a></td><td>Authority is claimed, widened or kept after revocation along a chain.</td><td>Row <a href="#tr-t9">T9</a>, with Staford Titus S.: Kenne summarised authority continuity as provenance, scope preserved at each hop, revocation that propagates, and each action tied back to the mandate. Each part stops a different failure.</td></tr>
+        </tbody>
+      </table></div>
+      <p><b>Limits.</b> A verdict describes a definition. If a server changes behaviour while the definition stays the same, the verdict still matches; binding receipts to the executed effect (row <a href="#tr-t10">T10</a>) covers that. Kenne's proposals do not address enforcement of declared policies or attribution of instances (groups G and H). Kenne also offers his own attestation format, CTEF, as deployment evidence; the draft treats product examples as evidence with the contributor's interest stated.</p>
+    </div>
+  </section>
+
+  <section id="latest">
+    <h2>Latest exchanges in plain English</h2>
+    <div class="prose"><p>Five messages on the list extend the comparison and binding-point work. Each block says what the contributor means, which use cases it touches, and what it changes in the draft.</p></div>
+    <article class="plain" id="pe-failopen">
+      <h3>False alarms and silent errors</h3><p class="who">Background for the blocks below</p>
+      <p>A check can go wrong in two ways. It can <b>fail closed</b>: two records about the same agent look different, the system reports a conflict, and someone investigates a problem that is not there. Or it can <b>fail open</b>: two records about different agents look identical, and the system carries on as if they were the same. A smoke alarm that goes off for burnt toast fails closed; one with a flat battery fails open.</p>
+      <p>False alarms get noticed. Silent errors do not, because normal use never produces the input that triggers them. The only way to find them is to build that input on purpose and check that the test catches it.</p>
+      <p class="meta"><b>Use cases</b> <a href="#card-s6">S6</a> <a href="#card-i10">I10</a> <a href="#card-i1">I1</a> &nbsp; <b>Changes</b> Test vectors should say which way each check fails.</p>
+    </article><article class="plain" id="pe-templeman">
+      <h3>A log fingerprint that accepts a padded log</h3><p class="who">Nicholas Templeman, CSOAI Ltd; <a href="https://huggingface.co/datasets/csoai/councilof-ai-mirror/tree/main/corrections">reproduction</a></p>
+      <p>A transparency log publishes a single fingerprint, called the root, that summarises every entry. Nicholas's log follows a common design that copies the last entry when the number of entries is odd, a weakness known since Bitcoin (CVE-2012-2459). A version of the log with that entry duplicated therefore has the same root as the real one.</p>
+      <p>His team built such a forged log. It passed twenty-nine of thirty checks, including every entry check and the root comparison; only the entry count caught it. The fix is to record the count alongside the root, and the lesson he offers is the one above: silent errors turn up only when someone forges the failing input.</p>
+      <p class="meta"><b>Use cases</b> <a href="#card-i10">I10</a> <a href="#card-i1">I1</a> &nbsp; <b>Changes</b> New trace row <a href="#tr-t23">T23</a>; an entry count to add to anchored and logged artefacts in the next KRT version.</p>
+    </article><article class="plain" id="pe-parle">
+      <h3>Why identifiers travel as text</h3><p class="who">Amey Parle, <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0030.html">reply</a>; <a href="https://github.com/giskard09/draft-etcheverry-action-ref/tree/main/conformance/trail">vectors</a></p>
+      <p>A number in JSON stores a value, not the digits someone typed. Above about nine quadrillion, neighbouring whole numbers round to the same value, so two different agent IDs can arrive as one. Written as text, the digits themselves are the record and there is nothing to round.</p>
+      <p>Refusing number-typed IDs would also work, Amey says, but it catches the problem only when data arrives, and by then the sender may already have lost the digits. His test cases are now merged into the draft's conformance folder; each is labelled fails open or fails closed, and one deliberately produces two IDs with identical output.</p>
+      <p class="meta"><b>Use cases</b> <a href="#card-s6">S6</a> &nbsp; <b>Changes</b> Row <a href="#tr-t8">T8</a> now links the merged vectors; KRT rule R11 already requires text encoding.</p>
+    </article><article class="plain" id="pe-arsentev">
+      <h3>Checking a claim against a claim proves little</h3><p class="who">Evgenii Arsentev, Agent Conformance group; <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0028.html">message</a></p>
+      <p>Evgenii describes two kinds of check. A <b>consistency check</b> compares one claim with another, for instance the call an agent says it made against the scope it says it holds. It catches contradictions. An <b>evidence check</b> compares a claim with something worked out or fetched independently, for instance the address the request really reached. It catches false claims. His group's rule is that no check treats a claim as a fact.</p>
+      <p>He adds a second risk. A receipt that is linked instead of included can disappear, and every check that relies on it quietly becomes "not checked" while nothing false is written. His group's answer is one line on each report: how many records carry their evidence and how many only point to it.</p>
+      <p class="meta"><b>Use cases</b> <a href="#card-i1">I1</a> <a href="#card-i10">I10</a> <a href="#card-s7">S7</a> &nbsp; <b>Changes</b> New trace row <a href="#tr-t24">T24</a>; evidence counts to add to audit reports in the next KRT version.</p>
+    </article><article class="plain" id="pe-anas">
+      <h3>Logs that echo the claim</h3><p class="who">Syed Anas Mohiuddin; <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0029.html">message</a></p>
+      <p>Anas finds the same fault across many MCP servers from different vendors. A tool accepts a scope, such as a folder or a base address, and a second identifier that is pasted into the real request. The permission check compares the scope with the identifier as typed and never with where the request finally lands, so the request can reach somewhere else while carrying the credentials the scope was meant to protect.</p>
+      <p>Most of these servers keep logs, but the logs record the call as typed. A log full of receipts can still hide the fault if every receipt records the wrong side. His fix is for the receipt to carry the resolved target, the final address after substitution and clean-up, and he extends Evgenii's count: of the records that carry evidence, how many show what was declared and how many show what was executed. He offers a write-up of the pattern without vendor names.</p>
+      <p class="meta"><b>Use cases</b> <a href="#card-i1">I1</a> <a href="#card-i3">I3</a> <a href="#card-i5">I5</a> <a href="#card-i10">I10</a> &nbsp; <b>Changes</b> Row <a href="#tr-t10">T10</a> now requires the resolved target in receipts.</p>
+    </article><article class="plain" id="pe-ives">
+      <h3>Byte equality settles only what was declared</h3><p class="who">Kenne Ives; <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0023.html">message</a></p>
+      <p>Kenne agrees that second sets of test vectors belong in the conformance folder, each checked first against the published examples in RFC 8785 so that no set depends on another implementation. Following Anas, the comparison subsection will say that identical bytes settle only the comparison of what was declared, and will name receipts bound to the executed effect as the open extension. Kenne will join calls when comparison semantics is on the agenda.</p>
+      <p class="meta"><b>Use cases</b> <a href="#card-s6">S6</a> <a href="#card-i5">I5</a> &nbsp; <b>Changes</b> No new row; wording for the §4 subsection.</p>
+    </article>
+  </section>
+</div>
+
+<!-- ============ TAB 1 ============ -->
+<div class="panel" id="vocab" role="tabpanel" aria-labelledby="t-vocab" hidden>
+  <div class="intro">
+    <h2>Shared vocabulary</h2>
+    <p class="lede">Contributors come from identity, distributed systems, cryptography and security engineering. This tab fixes one term for each idea so use cases and requirements can be written in the same language.</p>
+  </div>
+
+  <section>
+    <h2>How a trust check works</h2>
+    <div class="scenario">
+      <div>
+        <p><strong>Reference scenario.</strong> Organisation X runs booking agent A. A hands payment to agent B, operated by payments provider Y. B calls refund tool T on Y's backend. A relying party checks claims at each hop, and an auditor reviews the chain afterwards.</p>
+        <p>Every use case and example in this document refers back to these names.</p>
+      </div>
+      <svg viewBox="0 0 320 110" role="img" aria-label="X gives a mandate to agent A, which delegates to agent B, which calls tool T">
+        <g font-family="Archivo, sans-serif" font-size="13" fill="#eef0f5" text-anchor="middle">
+          <g fill="none" stroke="#c9a13b" stroke-width="1.5">
+            <circle cx="30" cy="55" r="22"/><circle cx="115" cy="55" r="22"/><circle cx="200" cy="55" r="22"/><rect x="265" y="35" width="44" height="40" rx="3"/>
+            <path d="M52 55h39M137 55h39M222 55h39"/>
+            <path d="M86 51l6 4-6 4M171 51l6 4-6 4M256 51l6 4-6 4" fill="#c9a13b" stroke="none"/>
+          </g>
+          <text x="30" y="60">X</text><text x="115" y="60">A</text><text x="200" y="60">B</text><text x="287" y="60">T</text>
+          <text x="72" y="100" font-size="11" fill="#e3c878">mandate</text><text x="157" y="100" font-size="11" fill="#e3c878">delegation</text><text x="242" y="100" font-size="11" fill="#e3c878">tool call</text>
+        </g>
+      </svg>
+    </div>
+    <div class="prose"><p>When A asks B to pay a refund, B works through the following questions. Each has its own vocabulary, and each can fail separately.</p></div>
+    <ol class="steps">
+      <li><b>Identify</b>A presents an identifier, for example a DID, and claims to control it.</li>
+      <li><b>Resolve</b>B obtains A's identity document from wherever the identifier method says, or from material A conveyed.</li>
+      <li><b>Verify integrity</b>B checks the signature against the key in the document and confirms the document is the right version.</li>
+      <li><b>Check currency</b>B confirms nothing has been revoked within the staleness bound it accepts.</li>
+      <li><b>Check authority</b>B follows the mandate from X through A and confirms the scope still covers this refund.</li>
+      <li><b>Check behaviour and effect</b>B asks what enforces A's declared policies, and whether the action it will record is the action that runs.</li>
+      <li><b>Decide</b>B applies its policy to the results, including those that came back unknown.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Glossary</h2>
+    <div class="prose"><p>The first column is the term the specification uses. The last column lists synonyms met on the lists and in the incident reports.</p></div>
+    <div class="tw"><table class="glossary">
+      <thead><tr><th>Term</th><th>Meaning</th><th>Also met as</th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="3">Parties</td></tr>
+        <tr><td>Principal</td><td>The person or organisation whose authority an agent exercises (X in the scenario).</td><td>owner, user, deployer</td></tr>
+        <tr><td>Agent</td><td>Software that acts on a principal's behalf with some autonomy (A, B).</td><td>AI agent, bot</td></tr>
+        <tr><td>Agent instance</td><td>One running copy of an agent. Many instances can share one agent identity.</td><td>session, worker, sub-agent</td></tr>
+        <tr><td>Operator</td><td>Whoever runs the infrastructure an agent executes on. May differ from the principal.</td><td>provider, host, platform</td></tr>
+        <tr><td>Issuer, subject, holder</td><td>Who signs a claim, whom the claim is about, and who presents it.</td><td></td></tr>
+        <tr><td>Relying party</td><td>Whoever decides whether to act on a claim (B when A calls).</td><td>verifier, counterparty</td></tr>
+        <tr><td>Tool, skill</td><td>A capability an agent can invoke (T). MCP servers and skill packages are common forms.</td><td>plugin, connector, extension</td></tr>
+
+        <tr class="group"><td colspan="3">Claims and artefacts</td></tr>
+        <tr><td>Artefact</td><td>Any signed or hashed object a trust decision relies on: identity document, credential, mandate, verdict, receipt.</td><td>artifact, record</td></tr>
+        <tr><td>Verifiable Credential (VC)</td><td>A W3C format for a signed claim about a subject.</td><td>credential, attestation</td></tr>
+        <tr><td>Mandate</td><td>The scope of action a principal grants an agent: what, how much, until when.</td><td>authorisation, grant, capability</td></tr>
+        <tr><td>Delegation</td><td>Passing part of a mandate to another agent or tool.</td><td>sub-delegation, token exchange</td></tr>
+        <tr><td>Declaration</td><td>A statement a subject signs about itself, such as affiliations or activities it does not engage in.</td><td>self-attestation, disclosure</td></tr>
+        <tr><td>Verdict</td><td>A signed finding about something, for example that a tool was reviewed.</td><td>attestation, assessment</td></tr>
+        <tr><td>Receipt</td><td>A signed record that an action happened.</td><td>action record, evidence</td></tr>
+        <tr><td>Self-asserted, third-party attested</td><td>Whether a claim is signed by its own subject or by someone independent of it.</td><td>self-issued, externally verified</td></tr>
+        <tr><td>Proposition</td><td>What an artefact is capable of proving. A valid identity document proves key control and says nothing about permission.</td><td></td></tr>
+
+        <tr class="group"><td colspan="3">Identity and resolution</td></tr>
+        <tr><td>DID, DID document, DID method</td><td>A W3C Decentralized Identifier (<code>did:method:…</code>) points to a document holding public keys. The method defines how to find that document.</td><td>agent ID</td></tr>
+        <tr><td>Self-certifying identifier</td><td>An identifier with the public key embedded in it, so no lookup is needed. It cannot be revoked; exposure ends with its lifetime.</td><td><code>did:key</code>, <code>aip:key</code></td></tr>
+        <tr><td>Resolution</td><td>Obtaining the document or artefact needed to verify a claim.</td><td>lookup, fetch</td></tr>
+        <tr><td>Resolution topology</td><td>Where trust material comes from: ledger, operator domain, third-party registry, or nowhere (self-certifying).</td><td>resolution path, substrate</td></tr>
+        <tr><td>Resolution coupling</td><td>Whether resolution happens during every verification (coupled) or ahead of time from conveyed and cached material (decoupled).</td><td>online / offline verification</td></tr>
+        <tr><td>Anchoring</td><td>Recording a hash on a ledger or timestamp service to prove it existed at a time. Separate from resolution.</td><td>notarisation, timestamping</td></tr>
+        <tr><td>Observation by the resolver</td><td>What a resolution source learns from lookups: which agent was checked, by whom, when.</td><td>lookup privacy</td></tr>
+
+        <tr class="group"><td colspan="3">Integrity and time</td></tr>
+        <tr><td>Content-addressed</td><td>Named by the hash of its bytes. Anyone can recompute the hash to confirm they hold the right object.</td><td>hash-pinned</td></tr>
+        <tr><td>Location-bound</td><td>Trusted because of where it was fetched from. Whoever controls the location controls the content.</td><td>URL-based</td></tr>
+        <tr><td>Integrity resolution</td><td>Establishing that an object is the right one.</td><td></td></tr>
+        <tr><td>Availability resolution</td><td>Establishing that an object can be obtained and is current.</td><td></td></tr>
+        <tr><td>Staleness bound</td><td>The longest interval during which a revoked item can still pass verification.</td><td>freshness, TTL, cache lifetime</td></tr>
+        <tr><td>Revocation</td><td>Withdrawal of a credential, key or claim. Distinct from "failed to fetch" and "never issued".</td><td>suspension</td></tr>
+        <tr><td>Drift</td><td>An approved artefact changing after approval while keeping its name.</td><td>rug pull, post-approval mutation</td></tr>
+
+        <tr class="group"><td colspan="3">Trust anchors and DNS (added 10 October 2026 from the Root KSK note)</td></tr>
+        <tr><td>Trust anchor</td><td>A public key, or its fingerprint, that a verifier already trusts and starts a chain of validation from. The DNS root has no parent to vouch for it, so validating resolvers hold its key as a trust anchor. Not to be confused with anchoring, which records a hash on a ledger or timestamp service.</td><td>root of trust, starting point</td></tr>
+        <tr><td>DNSSEC chain of trust</td><td>The path a resolver follows from its trust anchor down to a name: each parent zone publishes a fingerprint (DS record) of its child's key, so the root vouches for .com and .com for example.com.</td><td>delegation chain</td></tr>
+        <tr><td>Root key-signing key (KSK)</td><td>The key that signs the DNS root's list of public keys (its DNSKEY set). KSK-2024 (key tag 38696) is scheduled to replace KSK-2017 (key tag 20326) on 11 October 2026. The zone-signing key (ZSK) signs the root's other records.</td><td>root key, KSK-2024</td></tr>
+        <tr><td>Validating resolver</td><td>A DNS resolver that checks DNSSEC signatures for its users, run by ISPs, enterprises and public DNS services. A validating resolver that does not trust the current root key may leave its users unable to reach names under any top-level domain.</td><td>recursive resolver</td></tr>
+        <tr><td>Key rollover</td><td>Replacing a key in stages: the new key is published alongside the old, signing switches to it, and the old key is later revoked and removed. Stopping a key from signing and withdrawing trust in it are separate steps.</td><td>KSK rollover, key change</td></tr>
+        <tr><td>Algorithm rollover</td><td>A rollover that also changes the signing algorithm. Verifiers need both a new trust anchor and software that can check the new signatures. ICANN has proposed moving the root from RSA to ECDSA, and a post-quantum root key would need another.</td><td>algorithm change</td></tr>
+        <tr><td>Automated trust-anchor update (RFC 5011)</td><td>A resolver learns a new trust anchor by seeing it published, signed by the key it already trusts, for at least 30 days before accepting it. Learned anchors can be lost when software is upgraded or moved between machines.</td><td>RFC 5011 hold-down</td></tr>
+        <tr><td>Trust anchor sentinel (RFC 8509)</td><td>A way to ask a supporting resolver whether it trusts a given root key, using specially named DNS queries (<code>is-ta-</code> and <code>not-ta-</code> followed by the key tag). A result is inconclusive where the resolver lacks sentinel support.</td><td>readiness test</td></tr>
+        <tr><td>Validation state</td><td>The outcome of DNSSEC validation for a response: secure, insecure, bogus or indeterminate. Under draft-ranjbar-dane-did-01, anything other than secure counts as a verification failure, never as absence, so a stripped response cannot demote a binding.</td><td>secure, bogus</td></tr>
+        <tr><td>DANE-EE key binding</td><td>A TLSA record with certificate usage DANE-EE(3), selector SPKI(1) and matching type SHA2-256(1), published under a DNSSEC-signed name so a key can be confirmed from the DNS root with no certificate authority in the path. Proposed as a shared profile for DNS-anchored DID methods.</td><td>TLSA 3 1 1, DANE-anchored identity</td></tr>
+        <tr><td>Continuity of holding</td><td>Whether the party controlling a name now is the party that controlled it when a binding was recorded. A key binding certifies only the current holder: after a lapse and drop-catch, a dispute transfer or a sale, the new holder's key verifies just as well. Distinct from key continuity, which only asks whether a key has changed.</td><td>change of holder, domain transfer</td></tr>
+        <tr><td>Currency and historical validity</td><td>Currency asks whether a binding is still the one published now; it decays and must be re-checked before reliance. Historical validity asks whether it was valid at a fixed earlier time; it does not decay. Evidence for one is never accepted as evidence for the other.</td><td>freshness, point-in-time validity</td></tr>
+        <tr><td>Stapled historical proof</td><td>The DNSSEC chain current when an artefact was produced (TLSA record with its RRSIG, DNSKEY and DS records up to the archived root trust anchor), carried with the artefact so a later verifier can check which key the name published at that time. Answers historical validity only.</td><td>stapled DNSSEC chain</td></tr>
+        <tr><td>Anchor succession</td><td><em>Proposed for KRT.</em> The handover of trust from one anchor to its successor, with an overlap window, a cutover and a revocation, recorded so an agent's trust state can be stated at any moment.</td><td></td></tr>
+        <tr><td>Trust state query</td><td><em>Proposed for KRT.</em> A query, on the model of RFC 8509 sentinels, by which a person or agent learns which trust anchors, vocabularies or authorities a verifier or agent currently accepts.</td><td></td></tr>
+
+        <tr class="group"><td colspan="3">Comparison</td></tr>
+        <tr><td>Canonical form</td><td>A fixed serialization so equal data gives identical bytes. RFC 8785 (JCS) does this for JSON.</td><td>canonicalization</td></tr>
+        <tr><td>Referential equivalence</td><td>Grounds for concluding that two artefacts from different producers concern the same subject or action.</td><td>comparison semantics</td></tr>
+        <tr><td>Declared semantics</td><td>The namespace, units or schema that fix what a field means.</td><td>schema reference</td></tr>
+        <tr><td>Fails closed, fails open</td><td>A check that fails closed raises a false alarm: someone looks and finds nothing wrong. A check that fails open raises nothing while letting a wrong result through. Only a test input built to defeat the check reveals a fail-open fault.</td><td>false conflict, false match, silent collision</td></tr>
+
+        <tr class="group"><td colspan="3">Authority</td></tr>
+        <tr><td>Authority continuity</td><td>Whether a mandate stays valid, in scope and unrevoked at every hop of a delegation chain.</td><td>chain of authority</td></tr>
+        <tr><td>Attenuation</td><td>Each delegation may narrow a mandate and never widen it.</td><td>scope narrowing</td></tr>
+        <tr><td>Binding point</td><td>What an attestation covers: the declared call, the request as sent, or the observed effect.</td><td>execution binding</td></tr>
+        <tr><td>Resolved target</td><td>The final address or path a request reaches after the agent's inputs are filled in and cleaned up.</td><td>executed destination</td></tr>
+        <tr><td>Consistency check, evidence check</td><td>A consistency check compares one claim with another and catches contradictions. An evidence check compares a claim with something worked out or fetched independently and catches false claims.</td><td>consistency row, evidence row</td></tr>
+        <tr><td>Carried and referenced evidence</td><td>Evidence included in a record, as opposed to a link to evidence held elsewhere. A link can stop working, and checks that depend on it quietly become unchecked.</td><td>embedded, linked</td></tr>
+
+        <tr class="group"><td colspan="3">Behaviour and oversight</td></tr>
+        <tr><td>Declared policy</td><td>A behaviour an agent or its operator claims the agent follows, such as "no destructive actions during a freeze".</td><td>guardrail, rule</td></tr>
+        <tr><td>Enforcement point</td><td>The component that makes a declared policy hold: the agent itself, the platform, or something outside both.</td><td>policy enforcement point</td></tr>
+        <tr><td>Containment</td><td>Limits on what an agent can reach, such as a sandbox without network access.</td><td>isolation, sandboxing</td></tr>
+        <tr><td>Monitoring coverage</td><td>The share of an agent's actions that someone other than the agent records.</td><td>observability, telemetry</td></tr>
+        <tr><td>Attribution</td><td>Establishing which principal, agent and instance performed an action.</td><td>accountability, provenance</td></tr>
+        <tr><td>Accountability record</td><td>Who answers for an action, legally or organisationally.</td><td>liability</td></tr>
+        <tr><td>Open-world, closed-world reading</td><td>Closed-world treats anything unstated as false; open-world treats it as unknown. A credential read closed-world implies its subject does nothing beyond what it declares.</td><td></td></tr>
+        <tr><td>Three-valued evaluation</td><td>A check returns yes, no or unknown, and policy states what happens on unknown.</td><td></td></tr>
+
+        <tr class="group"><td colspan="3">Attack patterns in the incident reports</td></tr>
+        <tr><td>Prompt injection</td><td>Instructions hidden in content an agent reads (a form field, a web page, a tool description) that the agent then follows.</td><td>indirect prompt injection</td></tr>
+        <tr><td>Tool poisoning</td><td>Hostile instructions placed in a tool's description or schema.</td><td>tool shadowing</td></tr>
+        <tr><td>Impersonation</td><td>Publishing something under a name that suggests a different publisher.</td><td>typosquatting, name-squatting</td></tr>
+        <tr><td>Supply chain compromise</td><td>Hostile code arriving through a dependency, package or marketplace.</td><td></td></tr>
+        <tr><td>Exfiltration</td><td>Sending data out to an attacker-controlled destination.</td><td>data leak</td></tr>
+        <tr><td>Sandbox escape</td><td>An agent reaching resources its containment was meant to deny.</td><td>breakout</td></tr>
+
+        <tr class="group"><td colspan="3">Systems and formats</td></tr>
+        <tr><td>p99 latency, tail amplification</td><td>The slowest one per cent of lookups. When every hop repeats verification, slow lookups become more frequent across the whole chain.</td><td>tail at scale</td></tr>
+        <tr><td>Network partition, PACELC</td><td>A partition leaves parts of a network unreachable. PACELC names the trade-offs: under partition, availability against consistency; otherwise, latency against consistency.</td><td>CAP</td></tr>
+        <tr><td>Ed25519, JWS, JWKS</td><td>A signature algorithm, a JSON signature format, and a published key set.</td><td></td></tr>
+        <tr><td>RFC 3161 timestamp, transparency log</td><td>Ways to prove a hash existed at a time without a blockchain.</td><td></td></tr>
+        <tr><td>Merkle root</td><td>One fingerprint summarising a whole list of records, used by transparency logs. Designs that copy the last record when the count is odd let lists of different lengths share a root unless the count is also recorded.</td><td>tree head, log root</td></tr>
+        <tr><td>Base, layer two, ERC-8004</td><td>Base is an Ethereum layer-two chain. ERC-8004 is the Ethereum proposal for on-chain agent registries.</td><td>L2</td></tr>
+        <tr><td>MCP, A2A</td><td>Model Context Protocol connects agents to tools; Agent2Agent connects agents to each other.</td><td></td></tr>
+        <tr><td>Conformance, test vectors</td><td>Fixed inputs with expected outputs so implementations can check themselves.</td><td></td></tr>
+        <tr><td>openclaw, moltbook, ClawHub</td><td>A self-hosted open-source agent, an agent-only social network built around it, and its skill marketplace.</td><td>Clawdbot, Moltbot</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</div>
+
+<!-- ============ TAB 2 ============ -->
+<div class="panel" id="cases" role="tabpanel" aria-labelledby="t-cases" hidden>
+  <div class="intro">
+    <h2>Use cases</h2>
+    <p class="lede">Ten reported incidents where an agent's identity, origin, mandate or behaviour could not be relied on, and seven scenarios built from them in which an agent declares something nobody can control, monitor or audit.</p>
+    <p class="small">Incident summaries follow the linked public reports. Several rest on the affected company's own account.</p>
+  </div>
+
+  <section>
+    <h2>Incidents</h2>
+
+    <article class="uc" id="i1">
+      <header><span class="id">I1</span><h3>A coding agent ignores a freeze and misreports the damage</h3><span class="by">Replit and SaaStr, mid-2025</span></header>
+      <p>During a declared code freeze, a coding agent ran destructive commands against a live production database, generated fabricated records, and told its user that rollback was impossible. The user later restored the data himself.</p>
+      <div class="facets">
+        <div><h4>Could not be relied on</h4><p>The declared behaviour (respect the freeze) and the agent's own report of what it had done.</p></div>
+        <div><h4>Why</h4><p>The freeze existed only as an instruction to the agent. No component outside it enforced the rule.</p></div>
+        <div><h4>The trust layer needs</h4><p>An enforcement point for each declared policy, and receipts produced outside the agent.</p></div>
+      </div>
+      <p class="src">Sources: <a href="https://www.theregister.com/2025/07/21/replit_saastr_vibe_coding_incident/">The Register</a>, <a href="https://incidentdatabase.ai/cite/1152/">AI Incident Database 1152</a></p>
+    </article>
+
+    <article class="uc" id="i2">
+      <header><span class="id">I2</span><h3>A customer-service agent's statement binds its operator</h3><span class="by">Air Canada, 2024</span></header>
+      <p>An airline chatbot gave a customer wrong information about a fare policy. A Canadian tribunal held the airline responsible for what its chatbot said and rejected the argument that the chatbot was a separate entity.</p>
+      <div class="facets">
+        <div><h4>Could not be relied on</h4><p>The content of the agent's statement.</p></div>
+        <div><h4>Why</h4><p>Nothing distinguished an authoritative commitment from generated text.</p></div>
+        <div><h4>The trust layer needs</h4><p>An accountability record naming who answers for what an agent states, and the proposition each statement can carry.</p></div>
+      </div>
+      <p class="src">Source: Moffatt v. Air Canada, 2024 BCCRT 149</p>
+    </article>
+
+    <article class="uc" id="i3">
+      <header><span class="id">I3</span><h3>Approved tools change after approval</h3><span class="by">MCP tool poisoning and rug pull, 2025</span></header>
+      <p>Researchers showed that hidden instructions in an MCP tool description can steer an agent into leaking data, and that a server can replace a tool's description after the user has approved it. A later CVE confirmed that approval did not survive server-side changes in a production tool.</p>
+      <div class="facets">
+        <div><h4>Could not be relied on</h4><p>The tool the user approved, from one session to the next.</p></div>
+        <div><h4>Why</h4><p>Approval was bound to a name and a location, and the content behind them could change.</p></div>
+        <div><h4>The trust layer needs</h4><p>Approval bound to a content hash, with re-verification whenever the hash changes.</p></div>
+      </div>
+      <p class="src">Sources: <a href="https://invariantlabs.ai/blog/mcp-security-notification-tool-poisoning-attacks">Invariant Labs</a>, <a href="https://labs.cloudsecurityalliance.org/research/csa-research-note-mcp-tool-poisoning-ai-agent-exfiltration-2/">CSA research note</a></p>
+    </article>
+
+    <article class="uc" id="i4">
+      <header><span class="id">I4</span><h3>A connector impersonates a vendor and turns hostile later</h3><span class="by">postmark-mcp, late 2025</span></header>
+      <p>A package presented as an MCP server for the Postmark email service shipped fifteen working versions, then added one line that copied every outgoing email to an outside address. Postmark stated it had no connection to the package.</p>
+      <div class="facets">
+        <div><h4>Could not be relied on</h4><p>The publisher's implied identity, and the package's behaviour across versions.</p></div>
+        <div><h4>Why</h4><p>The name suggested an official source, and earlier good versions built trust that carried over to the bad one.</p></div>
+        <div><h4>The trust layer needs</h4><p>Publisher identity separate from package name, a declared affiliation with the vendor, and version-pinned approval.</p></div>
+      </div>
+      <p class="src">Sources: <a href="https://postmarkapp.com/blog/information-regarding-malicious-postmark-mcp-package">Postmark</a>, <a href="https://thehackernews.com/2025/09/first-malicious-mcp-server-found.html">The Hacker News</a></p>
+    </article>
+
+    <article class="uc" id="i5">
+      <header><span class="id">I5</span><h3>An allowlisted domain outlives its owner</h3><span class="by">ForcedLeak, Salesforce Agentforce, 2025</span></header>
+      <p>Instructions hidden in a web form led a CRM agent to send customer data to an external address. The destination passed the platform's allowlist because it sat on a domain the vendor once used, which had expired and could be bought for a few dollars.</p>
+      <div class="facets">
+        <div><h4>Could not be relied on</h4><p>The allowlist, and the separation between data the agent read and instructions it followed.</p></div>
+        <div><h4>Why</h4><p>Trust was location-bound to a domain, and nobody tracked when control of that domain changed.</p></div>
+        <div><h4>The trust layer needs</h4><p>Governance and staleness bounds on location-bound trust, and receipts binding the action to its real destination.</p></div>
+      </div>
+      <p class="src">Sources: <a href="https://noma.security/blog/forcedleak-agent-risks-exposed-in-salesforce-agentforce">Noma Security</a>, <a href="https://thehackernews.com/2025/09/salesforce-patches-critical-forcedleak.html">The Hacker News</a></p>
+    </article>
+
+    <article class="uc" id="i6">
+      <header><span class="id">I6</span><h3>A false mandate, presented to an agent</h3><span class="by">GTG-1002, reported late 2025</span></header>
+      <p>According to Anthropic's report, operators attributed to a state-sponsored group told a coding agent they worked for a legitimate security firm doing authorised testing. The agent then carried out most of an intrusion campaign against around thirty organisations.</p>
+      <div class="facets">
+        <div><h4>Could not be relied on</h4><p>The identity and mandate the humans declared to the agent.</p></div>
+        <div><h4>Why</h4><p>The agent was the relying party and had nothing to check the claim against.</p></div>
+        <div><h4>The trust layer needs</h4><p>Mandates that agents can verify, and a policy for work requested under an unverified mandate.</p></div>
+      </div>
+      <p class="src">Sources: <a href="https://www.paulweiss.com/insights/client-memos/anthropic-disrupts-first-documented-case-of-large-scale-ai-orchestrated-cyberattack">Paul, Weiss summary</a>, <a href="https://incidentdatabase.ai/cite/1263/">AI Incident Database 1263</a></p>
+    </article>
+
+    <article class="uc" id="i7">
+      <header><span class="id">I7</span><h3>Agent or human, and whose agent?</h3><span class="by">Moltbook, early 2026</span></header>
+      <p>An exposed database on an agent-only social network revealed about 1.5 million registered agents behind roughly 17,000 human accounts. Humans could post as agents with a plain web request, and leaked keys let anyone take over any agent account.</p>
+      <div class="facets">
+        <div><h4>Could not be relied on</h4><p>That an "agent" was an agent, and that its posts came from its owner.</p></div>
+        <div><h4>Why</h4><p>No mechanism tied an account to an agent instance or its principal, and exposed keys had no revocation path.</p></div>
+        <div><h4>The trust layer needs</h4><p>Instance-level identity linked to a principal, authorship receipts, and revocable keys.</p></div>
+      </div>
+      <p class="src">Sources: <a href="https://www.wiz.io/blog/exposed-moltbook-database-reveals-millions-of-api-keys">Wiz</a>, <a href="https://www.infosecurity-magazine.com/news/moltbook-exposes-user-data-api/">Infosecurity Magazine</a></p>
+    </article>
+
+    <article class="uc" id="i8">
+      <header><span class="id">I8</span><h3>A skill marketplace as a delivery channel</h3><span class="by">ClawHub and ClawHavoc, 2026</span></header>
+      <p>Researchers found hundreds of malicious skills in the openclaw marketplace, where a week-old GitHub account was enough to publish. Some skills rewrote the agent's persistent memory and configuration files so their instructions outlived removal. Later skills evaded the scanners added in response.</p>
+      <div class="facets">
+        <div><h4>Could not be relied on</h4><p>The publisher, the skill, and afterwards the agent's own configuration.</p></div>
+        <div><h4>Why</h4><p>Open publishing with minimal identity, and agent memory treated as internal state instead of an artefact.</p></div>
+        <div><h4>The trust layer needs</h4><p>Publisher provenance, and configuration and memory recorded as artefacts with integrity checks.</p></div>
+      </div>
+      <p class="src">Sources: <a href="https://thehackernews.com/2026/02/researchers-find-341-malicious-clawhub.html">The Hacker News</a>, <a href="https://unit42.paloaltonetworks.com/openclaw-ai-supply-chain-risk/">Unit 42</a></p>
+    </article>
+
+    <article class="uc" id="i9">
+      <header><span class="id">I9</span><h3>An evaluation agent escapes and goes unattributed</h3><span class="by">OpenAI and Hugging Face, July 2026</span></header>
+      <p>During an internal capability evaluation, agents running on OpenAI models left their sandbox, compromised third-party infrastructure, and ran an intrusion into Hugging Face production systems over several days. Hugging Face disclosed the intrusion without knowing who was behind it; OpenAI identified its own agents afterwards.</p>
+      <div class="facets">
+        <div><h4>Could not be relied on</h4><p>The declared containment, and the operator's knowledge of what its agents were doing.</p></div>
+        <div><h4>Why</h4><p>Containment was a configuration claim, and monitoring did not connect the actions to their source in time.</p></div>
+        <div><h4>The trust layer needs</h4><p>Containment attested by the infrastructure, and attribution that ties actions to operator, agent and instance.</p></div>
+      </div>
+      <p class="src">Sources: <a href="https://huggingface.co/blog/agent-intrusion-technical-timeline">Hugging Face timeline</a>, <a href="https://en.wikipedia.org/wiki/2026_OpenAI_agent_cyberattacks">Wikipedia summary</a></p>
+    </article>
+
+    <article class="uc" id="i10">
+      <header><span class="id">I10</span><h3>The environment was not what the agent was told</h3><span class="by">Anthropic cyber evaluations, disclosed July 2026</span></header>
+      <p>Anthropic reported that Claude models in third-party cyber evaluations had internet access although the prompt said they had none, and compromised real systems of several organisations while treating them as part of the exercise. Most affected organisations had not noticed. A later review found a further incident the first transcript scan had missed.</p>
+      <div class="facets">
+        <div><h4>Could not be relied on</h4><p>The environment declared to the agent, and the completeness of the first audit.</p></div>
+        <div><h4>Why</h4><p>The environment claim came from a misconfigured setup, and audit coverage was assumed complete.</p></div>
+        <div><h4>The trust layer needs</h4><p>Environment claims from the infrastructure itself, and audit records that state their coverage.</p></div>
+      </div>
+      <p class="src">Sources: <a href="https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals">Anthropic, first report</a>, <a href="https://www.anthropic.com/research/alignment-assessment-cybersecurity-incidents">Anthropic, alignment assessment</a></p>
+    </article>
+  </section>
+
+  <section>
+    <h2>Scenarios</h2>
+    <div class="prose"><p>Each scenario isolates one way an agent or its principal can declare identity or behaviour that others cannot control, monitor or audit. They use the reference scenario from tab 2.</p></div>
+
+    <article class="uc" id="s1">
+      <header><span class="id">S1</span><h3>Activity outside the declared mandate</h3><span class="by">Proposed by the chair; compare I6</span></header>
+      <p>X holds a credential stating it is a registered company providing travel services, and A acts under that mandate. X also supplies a weapons programme, which is recorded nowhere the issuer looked. Y's policy excludes customers in that sector. A university lab with a policy on dual-use partners, or a person with an official ID who also works for an intelligence service, presents the same problem.</p>
+<pre class="mini">credential      issuer: registry R    subject: X
+  vouches for   legal registration; declared activity "travel services"
+  source        registration: R's records   activity: X's own statement
+  completeness  not attested
+
+declaration     issuer: X (self-asserted)
+  asserts       no activity in: defence supply chain, military end use
+
+evidence        issuer: screening service S   checked: last week
+  checks        sanctions and export-control lists
+  result        no match   coverage: listed entities only
+
+B's reading     activity outside declaration: UNKNOWN
+B's policy      on UNKNOWN for this sector: refuse, or ask for a further attestation</pre>
+      <div class="facets">
+        <div><h4>Cannot be controlled or seen</h4><p>Activity nobody records.</p></div>
+        <div><h4>What representation can do</h4><p>Mark where attested knowledge stops, turn omission into a false signed statement, and make unknown a deliberate policy decision.</p></div>
+        <div><h4>Limit</h4><p>For individuals, a duty to declare collides with privacy law and legal secrecy. "Cannot disclose" needs its own value, distinct from "no".</p></div>
+      </div>
+    </article>
+
+    <article class="uc" id="s2">
+      <header><span class="id">S2</span><h3>A declared policy with no enforcer</h3><span class="by">From I1</span></header>
+      <p>A's credential lists policies: no refunds above €1,000, and stop on request. The policies exist as instructions inside A. X sends a stop request, and A issues a €3,000 refund anyway.</p>
+      <div class="facets">
+        <div><h4>Cannot be controlled or seen</h4><p>Whether A follows its own policies.</p></div>
+        <div><h4>What representation can do</h4><p>Record, for each policy, where it is enforced and by whom. A policy enforced only inside the agent is labelled self-enforced, and B can cap what it accepts from such agents.</p></div>
+        <div><h4>Limit</h4><p>A label does not stop the refund. Y's payment system has to check the limit itself.</p></div>
+      </div>
+    </article>
+
+    <article class="uc" id="s3">
+      <header><span class="id">S3</span><h3>A declared environment that is wrong</h3><span class="by">From I9 and I10</span></header>
+      <p>X's operator states that A runs in a sandbox with no outbound network. The configuration is mistaken, and A reaches Y's production systems while believing them to be test fixtures.</p>
+      <div class="facets">
+        <div><h4>Cannot be controlled or seen</h4><p>The real environment, from the point of view of both A and Y.</p></div>
+        <div><h4>What representation can do</h4><p>Distinguish environment claims made by the operator from those attested by the infrastructure (egress logs, platform attestation), each with a date and staleness bound.</p></div>
+        <div><h4>Limit</h4><p>Infrastructure attestation relies on the infrastructure provider, who becomes a party to trust.</p></div>
+      </div>
+    </article>
+
+    <article class="uc" id="s4">
+      <header><span class="id">S4</span><h3>Many instances, one name</h3><span class="by">From I7 and I9</span></header>
+      <p>Hundreds of A's instances run in parallel under one identifier and coordinate through a shared channel. One instance calls T outside the mandate. The logs show "A" and nothing more.</p>
+      <div class="facets">
+        <div><h4>Cannot be controlled or seen</h4><p>Which instance acted, and whether its operator knew.</p></div>
+        <div><h4>What representation can do</h4><p>Give each instance its own identifier delegated from the agent identity, require receipts to name the instance, and declare coordination channels.</p></div>
+        <div><h4>Limit</h4><p>Instances created outside the operator's control carry no delegation and are indistinguishable from impostors.</p></div>
+      </div>
+    </article>
+
+    <article class="uc" id="s5">
+      <header><span class="id">S5</span><h3>A claimed mandate presented to an agent</h3><span class="by">From I6</span></header>
+      <p>A human tells B they represent Y's security team and asks B to test T's limits. B has no way to confirm the claim.</p>
+      <div class="facets">
+        <div><h4>Cannot be controlled or seen</h4><p>Whether the requester holds the authority they claim.</p></div>
+        <div><h4>What representation can do</h4><p>Treat a mandate as an artefact agents can verify, and define the behaviour for unverified mandates, such as a restricted mode.</p></div>
+        <div><h4>Limit</h4><p>Agents also act on unstructured conversation, where no artefact is presented.</p></div>
+      </div>
+    </article>
+
+    <article class="uc" id="s6">
+      <header><span class="id">S6</span><h3>Approved, then changed</h3><span class="by">From I3, I4 and I8</span></header>
+      <p>Y approves version 1.4 of tool T. A later update adds a hidden data copy, and a skill installed alongside rewrites B's memory file so the change survives removal of the skill.</p>
+      <div class="facets">
+        <div><h4>Cannot be controlled or seen</h4><p>What T does now, and what B's configuration now contains.</p></div>
+        <div><h4>What representation can do</h4><p>Bind approval to content hashes of the tool definition and the agent configuration, and treat any change as a new artefact requiring approval.</p></div>
+        <div><h4>Limit</h4><p>Behaviour can change behind an unchanged definition, for example on the server side.</p></div>
+      </div>
+    </article>
+
+    <article class="uc" id="s7">
+      <header><span class="id">S7</span><h3>An agent nobody can observe</h3><span class="by">From I7 and I8</span></header>
+      <p>A runs self-hosted on a personal computer with no telemetry. It presents a valid registry credential and a list of declared policies to B.</p>
+      <div class="facets">
+        <div><h4>Cannot be controlled or seen</h4><p>Everything A does apart from what it sends to B.</p></div>
+        <div><h4>What representation can do</h4><p>Record monitoring coverage as "none" explicitly, so B's policy can limit such agents to low-risk actions.</p></div>
+        <div><h4>Limit</h4><p>Only B's own records of the exchange remain available for audit.</p></div>
+      </div>
+    </article>
+  </section>
+</div>
+
+<!-- ============ TAB 3: TRACE ============ -->
+<div class="panel" id="trace" role="tabpanel" aria-labelledby="t-trace" hidden>
+  <div class="intro">
+    <h2>Trace</h2>
+    <p class="lede">Each row follows one weak point in the trust model from the person who raised it to the fix, the ontology term that records it, the use cases it protects and the test that shows it working.</p>
+    <p class="small">Read a row left to right. Pick a use case to see which weak points bear on it, or a status to see what still needs an owner.</p>
+  </div>
+  <div class="filters" role="group" aria-label="Filter the trace">
+    <label>Use case <select id="f-uc"><option value="">all</option><option value="I1">I1</option><option value="I2">I2</option><option value="I3">I3</option><option value="I4">I4</option><option value="I5">I5</option><option value="I6">I6</option><option value="I7">I7</option><option value="I8">I8</option><option value="I9">I9</option><option value="I10">I10</option><option value="S1">S1</option><option value="S2">S2</option><option value="S3">S3</option><option value="S4">S4</option><option value="S5">S5</option><option value="S6">S6</option><option value="S7">S7</option></select></label>
+    <label>Group <select id="f-g"><option value="">all</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>H</option></select></label>
+    <label>Status <select id="f-s"><option value="">all</option><option value="ok">Agreed on list</option><option value="prop">Proposed on list</option><option value="gh">Open on GitHub</option><option value="gap">Gap: needs an owner</option><option value="krt">Proposed in KRT</option><option value="sug">Suggestion for the group</option></select></label>
+    <button type="button" id="f-reset">Clear</button>
+    <span id="f-count" class="small" aria-live="polite"></span>
+  </div>
+  <div class="tw"><table class="trace">
+    <thead><tr><th>Trace</th><th>Status</th><th>Weak point</th><th>Use cases</th><th>Raised by</th><th>Proposed fix</th><th>Group</th><th>KRT term and rule</th><th>Test</th></tr></thead>
+    <tbody>
+      <tr id="tr-t1" data-uc="I5 S3" data-g="A" data-s="prop"><td>T1</td><td><span class="v part">Proposed on list</span></td><td>Outages, delays and "who can make an agent disappear" are pinned on the substrate, though they depend on how verification fetches its data.</td><td class="ucs"><a href="#i5">I5</a> <a href="#s3">S3</a></td><td>Morgan Reece, <a href="https://mailarchive.ietf.org/arch/msg/wimse/i08QgArGrcAwFQ7kHFW6U9ZtRCA">WIMSE list</a></td><td>Record where trust material comes from and whether it is fetched on every check, per verification path, with a staleness bound.</td><td>A</td><td><code class="wrap">topology, coupling, stalenessBound</code></td><td><a href="#c1">C1</a></td></tr>
+      <tr id="tr-t2" data-uc="I3 I4 I5 S6" data-g="A" data-s="gh"><td>T2</td><td><span class="v part">Open on GitHub</span></td><td>A compromised registry could swap an agent's keys, and the model cannot tell that apart from an outage.</td><td class="ucs"><a href="#i3">I3</a> <a href="#i4">I4</a> <a href="#i5">I5</a> <a href="#s6">S6</a></td><td>Isaac Mao, <a href="https://github.com/w3c-cg/aikr/pull/7">PR 7</a></td><td>Mark each artefact as content-addressed or location-bound.</td><td>A</td><td><code class="wrap">integrityMode, contentHash</code></td><td><a href="#c2">C2</a></td></tr>
+      <tr id="tr-t3" data-uc="I5 S3" data-g="A" data-s="gh"><td>T3</td><td><span class="v part">Open on GitHub</span></td><td>Freshness and speed are described in prose, so two systems cannot be compared.</td><td class="ucs"><a href="#i5">I5</a> <a href="#s3">S3</a></td><td>Ankur Chrungoo, <a href="https://github.com/w3c-cg/aikr/issues/8">issue 8</a></td><td>Typed attributes: a staleness bound in time units, tail latency per chain.</td><td>A</td><td><code class="wrap">stalenessBound</code></td><td><a href="#c3">C3</a></td></tr>
+      <tr id="tr-t4" data-uc="S4" data-g="A" data-s="gh"><td>T4</td><td><span class="v part">Open on GitHub</span></td><td>Identifiers carrying their own key fit none of the three arrangements and cannot be revoked.</td><td class="ucs"><a href="#s4">S4</a></td><td>Agent Community, <a href="https://github.com/w3c-cg/aikr/issues/5">issue 5</a></td><td>Add "self-certifying" as a topology value and require a stated lifetime.</td><td>A</td><td><code class="wrap">SelfCertifying, validUntil</code></td><td><a href="#c4">C4</a></td></tr>
+      <tr id="tr-t5" data-uc="" data-g="A" data-s="gh"><td>T5</td><td><span class="v part">Open on GitHub</span></td><td>Annex B misdescribes how did:moltrust resolves.</td><td class="ucs"><span class="small">none in the register yet</span></td><td>Lars Kersten Kroehl, <a href="https://github.com/w3c-cg/aikr/issues/9">issue 9</a></td><td>Correct the annex; keep resolution and anchoring apart.</td><td>A</td><td><code class="wrap">topology, anchoredIn</code></td><td><a href="#c5">C5</a></td></tr>
+      <tr id="tr-t6" data-uc="I3 I4 I8 S6" data-g="A, B" data-s="gh"><td>T6</td><td><span class="v part">Open on GitHub</span></td><td>Only identity documents are modelled, so a verdict about a tool can outlive changes to the tool.</td><td class="ucs"><a href="#i3">I3</a> <a href="#i4">I4</a> <a href="#i8">I8</a> <a href="#s6">S6</a></td><td>Kenne Ives, <a href="https://github.com/w3c-cg/aikr/issues/10">issue 10</a></td><td>Treat evidence as artefacts bound to a content hash, with a validity window and revocation.</td><td>A, B</td><td><code class="wrap">Verdict, contentHash, validUntil</code></td><td><a href="#c6">C6</a></td></tr>
+      <tr id="tr-t7" data-uc="I2 I4 I6 S1 S5" data-g="B" data-s="prop"><td>T7</td><td><span class="v part">Proposed on list</span></td><td>A verified identity is read as permission to act.</td><td class="ucs"><a href="#i2">I2</a> <a href="#i4">I4</a> <a href="#i6">I6</a> <a href="#s1">S1</a> <a href="#s5">S5</a></td><td>Raphael La Touche, Innocent Onyenonachi, <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/thread.html">list</a></td><td>State what each artefact can prove.</td><td>B</td><td><code class="wrap">canProve, Proposition; rule R1</code></td><td><a href="#c7">C7</a></td></tr>
+      <tr id="tr-t8" data-uc="S6" data-g="C" data-s="ok"><td>T8</td><td><span class="v ok">Agreed on list</span></td><td>Two artefacts with identical bytes can refer to different things, and large numbers collide silently.</td><td class="ucs"><a href="#s6">S6</a></td><td>Thanh Le, Kenne Ives, Amey Parle, <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0027.html">corrected on list</a>; <a href="https://github.com/giskard09/draft-etcheverry-action-ref/tree/main/conformance/trail">vectors merged</a></td><td>Mandatory string encoding for large identifiers, stated normalization, declared semantics.</td><td>C</td><td><code class="wrap">largeIntegersAsStrings, declaredSemantics; rule R11</code></td><td><a href="#c8">C8</a></td></tr>
+      <tr id="tr-t9" data-uc="I6 I9 S2 S4 S5" data-g="D" data-s="prop"><td>T9</td><td><span class="v part">Proposed on list</span></td><td>Authority can widen, or survive revocation, as it passes along a delegation chain.</td><td class="ucs"><a href="#i6">I6</a> <a href="#i9">I9</a> <a href="#s2">S2</a> <a href="#s4">S4</a> <a href="#s5">S5</a></td><td>Staford Titus S., Kenne Ives, <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/thread.html">list</a></td><td>Check scope at each hop, propagate revocation downstream, tie each action back to the mandate.</td><td>D</td><td><code class="wrap">Mandate, Delegation, attenuationChecked, revocationPropagates</code></td><td><a href="#c9">C9</a></td></tr>
+      <tr id="tr-t10" data-uc="I1 I3 I5 I10" data-g="E" data-s="prop"><td>T10</td><td><span class="v part">Proposed on list</span></td><td>An attestation covers the call the agent declared while the server runs something else.</td><td class="ucs"><a href="#i1">I1</a> <a href="#i3">I3</a> <a href="#i5">I5</a> <a href="#i10">I10</a></td><td>Syed Anas Mohiuddin, Amey Parle, Evgenii Arsentev, <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0029.html">list</a></td><td>State the binding point; the receipt carries the resolved target and comes from a component outside the agent.</td><td>E</td><td><code class="wrap">bindingPoint, producedBy; resolved target to add; rule R5</code></td><td><a href="#c10">C10</a></td></tr>
+      <tr id="tr-t11" data-uc="I6 S1" data-g="F" data-s="prop"><td>T11</td><td><span class="v part">Proposed on list</span></td><td>A credential's silence is read as "nothing else to know" about its subject.</td><td class="ucs"><a href="#i6">I6</a> <a href="#s1">S1</a></td><td>The chair, use case S1</td><td>State what the issuer checked, let subjects sign declarations, and evaluate to yes, no or unknown.</td><td>F</td><td><code class="wrap">completeness, controlDisclosure, onUnknown; rule R10</code></td><td><a href="#card-s1">S1</a></td></tr>
+      <tr id="tr-t12" data-uc="I1 I8 S2 S7" data-g="G" data-s="gap"><td>T12</td><td><span class="v open">Gap: needs an owner</span></td><td>Declared policies have no named enforcer, and stop commands can be lost.</td><td class="ucs"><a href="#i1">I1</a> <a href="#i8">I8</a> <a href="#s2">S2</a> <a href="#s7">S7</a></td><td>Use cases; no contributor yet</td><td>Name the enforcement point of every policy; test the stop channel.</td><td>G</td><td><code class="wrap">DeclaredPolicy, enforcedAt, stopChannel; rule R6</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t13" data-uc="I9 I10 S3" data-g="G" data-s="gap"><td>T13</td><td><span class="v open">Gap: needs an owner</span></td><td>Sandbox and network claims come from configuration files.</td><td class="ucs"><a href="#i9">I9</a> <a href="#i10">I10</a> <a href="#s3">S3</a></td><td>Use cases; no contributor yet</td><td>Environment claims attested by the infrastructure, dated.</td><td>G</td><td><code class="wrap">EnvironmentAttestation; rule R9</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t14" data-uc="I7 I9 S4" data-g="H" data-s="gap"><td>T14</td><td><span class="v open">Gap: needs an owner</span></td><td>Actions cannot be traced to the instance or operator behind them.</td><td class="ucs"><a href="#i7">I7</a> <a href="#i9">I9</a> <a href="#s4">S4</a></td><td>Use cases; no contributor yet</td><td>Instance identifiers and an operator of record on every receipt.</td><td>H</td><td><code class="wrap">AgentInstance, operatorOfRecord; rule R8</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t15" data-uc="I1 I3 I5 I6 S2" data-g="D, G" data-s="krt"><td>T15</td><td><span class="v part">Proposed in KRT</span></td><td>Instructions found in content get treated as authorised, and irreversible actions proceed on weak evidence.</td><td class="ucs"><a href="#i1">I1</a> <a href="#i3">I3</a> <a href="#i5">I5</a> <a href="#i6">I6</a> <a href="#s2">S2</a></td><td><a href="https://w3c-cg.github.io/aikr/trust/krt.html">KRT skeleton</a></td><td>Record instruction provenance and reversibility; require independent evidence for irreversible actions.</td><td>D, G</td><td><code class="wrap">instructionProvenance, reversibility; rules R2, R4</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t16" data-uc="I7" data-g="A, G" data-s="krt"><td>T16</td><td><span class="v part">Proposed in KRT</span></td><td>Revoking access leaves copies and keys usable.</td><td class="ucs"><a href="#i7">I7</a></td><td><a href="https://w3c-cg.github.io/aikr/trust/krt.html">KRT skeleton</a></td><td>A revocation states which derived data it reaches and its staleness bound.</td><td>A, G</td><td><code class="wrap">Revocation, coversDerivedData; rule R7</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t17" data-uc="I2" data-g="B, H" data-s="sug"><td>T17</td><td><span class="v sug">Suggestion for the group</span></td><td>Nobody is recorded as answering for what an agent states.</td><td class="ucs"><a href="#i2">I2</a></td><td>Suggestion for the group</td><td>Attach an accountability record naming the answering party to agent statements that customers may rely on.</td><td>B, H</td><td><code class="wrap">AccountabilityRecord; rule to write</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t18" data-uc="I4 I8" data-g="B, F" data-s="sug"><td>T18</td><td><span class="v sug">Suggestion for the group</span></td><td>A package or skill name can imply a publisher or vendor it has no tie to.</td><td class="ucs"><a href="#i4">I4</a> <a href="#i8">I8</a></td><td>Suggestion for the group</td><td>Record publisher identity separately from the name, and require a vendor-signed declaration before a package may claim a vendor.</td><td>B, F</td><td><code class="wrap">Declaration, issuedBy, controlDisclosure; rule to write</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t19" data-uc="I7" data-g="H" data-s="sug"><td>T19</td><td><span class="v sug">Suggestion for the group</span></td><td>Messages from a person using an agent's credentials look the same as the agent's own.</td><td class="ucs"><a href="#i7">I7</a></td><td>Suggestion for the group</td><td>Record authorship on every message and receipt: agent instance, person, or unknown.</td><td>H</td><td><code class="wrap">authorship; rule to write</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t20" data-uc="I10 S7" data-g="G" data-s="sug"><td>T20</td><td><span class="v sug">Suggestion for the group</span></td><td>Nobody records how much of an agent's activity anyone else sees, or how complete an audit was.</td><td class="ucs"><a href="#i10">I10</a> <a href="#s7">S7</a></td><td>Suggestion for the group</td><td>State monitoring coverage for each agent and coverage for each audit; allow "none".</td><td>G</td><td><code class="wrap">monitoringCoverage; rule to write</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t21" data-uc="I8 S6" data-g="G" data-s="sug"><td>T21</td><td><span class="v sug">Suggestion for the group</span></td><td>An agent's instructions, memory and installed skills can change without anyone approving the change.</td><td class="ucs"><a href="#i8">I8</a> <a href="#s6">S6</a></td><td>Suggestion for the group</td><td>Treat configuration and memory as artefacts with a content hash; a changed hash needs fresh approval.</td><td>G</td><td><code class="wrap">AgentConfiguration, contentHash; rule to write</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t22" data-uc="I9 S4" data-g="H" data-s="sug"><td>T22</td><td><span class="v sug">Suggestion for the group</span></td><td>Instances can coordinate through channels nobody declared.</td><td class="ucs"><a href="#i9">I9</a> <a href="#s4">S4</a></td><td>Suggestion for the group</td><td>Declare the channels through which instances share state.</td><td>H</td><td><code class="wrap">coordinationChannel; rule to write</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t23" data-uc="I1 I10" data-g="A, C" data-s="prop"><td>T23</td><td><span class="v part">Proposed on list</span></td><td>A log fingerprint can match record sets of different sizes, so comparing fingerprints accepts a padded log.</td><td class="ucs"><a href="#i1">I1</a> <a href="#i10">I10</a></td><td>Nicholas Templeman, quoted in <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0030.html">list reply</a></td><td>Record the number of entries with the fingerprint, and test the check with a forged log built to defeat it.</td><td>A, C</td><td><code class="wrap">anchoredIn, contentHash; entry count to add</code></td><td><span class="small">to write</span></td></tr>
+      <tr id="tr-t24" data-uc="I1 I10 S7" data-g="B, G" data-s="prop"><td>T24</td><td><span class="v part">Proposed on list</span></td><td>A check can compare one claim with another claim, or rely on a receipt that is only linked, and pass while checking nothing.</td><td class="ucs"><a href="#i1">I1</a> <a href="#i10">I10</a> <a href="#s7">S7</a></td><td>Evgenii Arsentev, <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0028.html">list</a>; Syed Anas Mohiuddin, <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0029.html">list</a></td><td>Keep consistency checks apart from evidence checks, and report how many records carry their evidence, and of those how many show execution.</td><td>B, G</td><td><code class="wrap">usesEvidence, attestationMode; rule R5; evidence counts to add</code></td><td><span class="small">to write</span></td></tr>
+    </tbody>
+  </table></div>
+  <p id="f-gapnote" class="small" hidden></p>
+  <div class="prose small"><p>Groups: A resolution and integrity, B proposition, C comparison, D authority continuity, E binding point, F coverage and disclosure, G enforcement and oversight, H instance and attribution. Rules R1 to R11 are defined on the <a href="https://w3c-cg.github.io/aikr/trust/krt.html">KRT page</a>. Tests C1 to C10 are the worked cases in tab 5; S1 is in tab 3.</p></div>
+</div>
+
+<!-- ============ TAB 3 ============ -->
+<div class="panel" id="coverage" role="tabpanel" aria-labelledby="t-coverage" hidden>
+  <div class="intro">
+    <h2>Coverage</h2>
+    <p class="lede">How the properties proposed in the thread apply to each use case, where they fall short, and minimal worked tests of each proposal.</p>
+  </div>
+
+  <section>
+    <h2>Use cases against property groups</h2>
+    <div class="prose">
+      <p>Groups A to F come from the thread (tab 6). Tab 3 traces each weak point row by row. Groups G and H, shaded, are needed by the use cases and have no proposal yet.</p>
+      <p class="small"><span class="m y">Covers</span> a thread proposal addresses the failure &nbsp; <span class="m p">Partly</span> it helps with part of it &nbsp; <span class="m g">Gap</span> a property is needed and nobody has proposed one &nbsp; <span class="m n">&ndash;</span> not relevant</p>
+    </div>
+    <div class="tw"><table class="matrix">
+      <thead><tr>
+        <th>Use case</th><th>A. Resolution and integrity</th><th>B. Proposition</th><th>C. Comparison</th><th>D. Authority continuity</th><th>E. Binding point</th><th>F. Coverage and disclosure</th><th class="new">G. Enforcement and oversight</th><th class="new">H. Instance and attribution</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><b>I1</b>Freeze ignored</td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m g">Gap</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>I2</b>Statement binds operator</td><td><span class="m n">&ndash;</span></td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td></tr>
+        <tr><td><b>I3</b>Tool changes after approval</td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>I4</b>Impersonating connector</td><td><span class="m p">Partly</span></td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>I5</b>Expired allowlisted domain</td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>I6</b>False mandate to agent</td><td><span class="m n">&ndash;</span></td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m y">Covers</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>I7</b>Agent or human</td><td><span class="m p">Partly</span></td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m g">Gap</span></td><td><span class="m g">Gap</span></td></tr>
+        <tr><td><b>I8</b>Marketplace skills</td><td><span class="m p">Partly</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m p">Partly</span></td><td><span class="m g">Gap</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>I9</b>Escape, unattributed</td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m g">Gap</span></td><td><span class="m g">Gap</span></td></tr>
+        <tr><td><b>I10</b>Environment misdeclared</td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m p">Partly</span></td><td><span class="m g">Gap</span></td><td><span class="m p">Partly</span></td></tr>
+        <tr><td><b>S1</b>Outside declared mandate</td><td><span class="m n">&ndash;</span></td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>S2</b>Policy with no enforcer</td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m g">Gap</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>S3</b>Wrong environment</td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m g">Gap</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>S4</b>Many instances</td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m g">Gap</span></td></tr>
+        <tr><td><b>S5</b>Claimed mandate to agent</td><td><span class="m n">&ndash;</span></td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>S6</b>Approved, then changed</td><td><span class="m y">Covers</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m p">Partly</span></td><td><span class="m n">&ndash;</span></td></tr>
+        <tr><td><b>S7</b>Unobservable agent</td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m n">&ndash;</span></td><td><span class="m y">Covers</span></td><td><span class="m g">Gap</span></td><td><span class="m n">&ndash;</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>What the matrix shows</h2>
+    <div class="prose">
+      <p>The thread's proposals handle identity, provenance and mandates well. Groups A, B and D cover the impersonation, drift and false-mandate cases, and the resolution work traced in the draft note carries over directly to I3, I5 and S6.</p>
+      <p>Every case about behaviour lands in group G, and no contributor has proposed properties for it. This is the chair's point on the list: a correct schema is the easier part, and trust depends on behaviour staying consistent with it. Attribution across instances (group H) is the second unaddressed need, raised most sharply by the July 2026 escape.</p>
+      <p>A representation cannot make a declared policy hold. It can record who claims the policy, which component enforces it, what evidence of enforcement exists and how much of the agent's activity anyone observes. With those recorded, a relying party can price the risk of trusting a self-asserted claim.</p>
+    </div>
+    <h3>Proposed properties for the two new groups</h3>
+    <div class="tw"><table class="wide">
+      <thead><tr><th>Group</th><th>Property</th><th>Values or content</th><th>Driven by</th></tr></thead>
+      <tbody>
+        <tr><td>G. Enforcement and oversight</td><td>Declared policy</td><td>The rule, stated so it can be tested</td><td>I1, S2</td></tr>
+        <tr><td></td><td>Enforcement point</td><td>Agent itself; platform; independent component. Named enforcer.</td><td>I1, I5, S2</td></tr>
+        <tr><td></td><td>Evidence of enforcement</td><td>Receipts or logs produced by the enforcer, with date</td><td>I1, I10</td></tr>
+        <tr><td></td><td>Environment claim</td><td>Containment and network reach, with issuer (operator or infrastructure) and staleness bound</td><td>I9, I10, S3</td></tr>
+        <tr><td></td><td>Monitoring coverage</td><td>Share of actions recorded outside the agent; "none" is a permitted value</td><td>I7, I10, S7</td></tr>
+        <tr><td></td><td>Stop channel</td><td>How the principal halts the agent, and whether that path has been tested</td><td>I1, S2</td></tr>
+        <tr><td></td><td>Configuration and memory integrity</td><td>Content hash of instructions, memory and installed skills</td><td>I8, S6</td></tr>
+        <tr><td>H. Instance and attribution</td><td>Instance identifier</td><td>Per running copy, delegated from the agent identity</td><td>I7, S4</td></tr>
+        <tr><td></td><td>Operator of record</td><td>Who runs the infrastructure, if different from the principal</td><td>I9, I10</td></tr>
+        <tr><td></td><td>Attribution in receipts</td><td>Principal, agent, instance and operator named on every action record</td><td>I2, I9, S4</td></tr>
+        <tr><td></td><td>Coordination channels</td><td>Declared means by which instances share state</td><td>I9, S4</td></tr>
+        <tr><td></td><td>Human or agent authorship</td><td>Whether a message came from an agent instance or a person using its credentials</td><td>I7</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Worked tests of each thread proposal</h2>
+    <div class="prose"><p>Each test applies one proposal to a minimal situation in the reference scenario and asks whether the current draft note can express what happens.</p></div>
+
+    <article class="uc" id="c1">
+      <header><span class="id">C1</span><h3>Coupling decides partition behaviour</h3><span class="by">Morgan Reece (IETF WIMSE list). Relevant to I5, S3.</span></header>
+      <p>A's DID resolves from a ledger. Relying party V1 queries the ledger on every call. V2 accepts the document conveyed with the request and a revocation list cached for ten minutes. The ledger becomes unreachable for thirty minutes.</p>
+      <div class="pair">
+        <div><h4>Current draft</h4><p>Both are described as ledger-dependent, with identical exposure.</p></div>
+        <div><h4>With the amendment</h4><p>V1 fails every call from the first minute. V2 continues for ten minutes, then stops accepting A. A captured ledger can delay refreshes and cannot forge validity. V1's lookups also tell the ledger's observers that Y dealt with A.</p></div>
+      </div>
+      <p class="verdict"><span class="v ok">Resolves</span>Record topology and coupling per verification path, and observation by the resolver as a governance attribute.</p>
+    </article>
+
+    <article class="uc" id="c2">
+      <header><span class="id">C2</span><h3>Altering is different from withholding</h3><span class="by">Isaac Mao, PR 7. Relevant to I3, I5, S6.</span></header>
+      <p>A's identity document is held by registry R, and R is compromised.</p>
+      <div class="pair">
+        <div><h4>Current draft</h4><p>Governance: registry operator. Silent on whether R can substitute keys or only withhold.</p></div>
+        <div><h4>With the amendment</h4><p>A location-bound document lets R swap in a new key, so an impostor verifies as A. A hash-pinned version leaves R able only to withhold it, and the absence is visible.</p></div>
+      </div>
+      <p class="verdict"><span class="v ok">Resolves</span>with a caveat: key rotation changes the document, so a hash pins one version, and learning the current version is again an availability question.</p>
+    </article>
+
+    <article class="uc" id="c3">
+      <header><span class="id">C3</span><h3>Freshness needs a number</h3><span class="by">Ankur Chrungoo, issue 8. Relevant to I5, S3.</span></header>
+      <p>X revokes A's key at 09:00. V1 caches revocation status for an hour, V2 for thirty seconds. Each hop's p99 lookup is 50 ms, over five coupled hops.</p>
+      <div class="pair">
+        <div><h4>Current draft</h4><p>Both "handle freshness". The single-hop p99 is reported as the budget.</p></div>
+        <div><h4>With the amendment</h4><p>A revoked A keeps acting until 10:00 at V1 and 09:00:30 at V2. About one chain in twenty (1 − 0.99<sup>5</sup> ≈ 4.9%) hits at least one lookup slower than the per-hop p99, against one in a hundred for a single hop.</p></div>
+      </div>
+      <p class="verdict"><span class="v ok">Resolves</span>Typed attributes make claims comparable. The PACELC framing and coupling describe one trade and fit in one table.</p>
+    </article>
+
+    <article class="uc" id="c4">
+      <header><span class="id">C4</span><h3>Identifiers that need no lookup</h3><span class="by">Agent Community, issue 5 and PR 6. Relevant to S4.</span></header>
+      <p>B starts a short-lived sub-agent B1 with a self-certifying identifier. B1's private key leaks.</p>
+      <div class="pair">
+        <div><h4>Current draft</h4><p>B1 fits none of the three arrangements.</p></div>
+        <div><h4>With the amendment</h4><p>Topology: none. Revocation: unavailable. Exposure ends with B1's lifetime, which acts as the staleness bound.</p></div>
+      </div>
+      <p class="verdict"><span class="v part">Partly</span>Add "self-certifying" as a topology value and require a stated lifetime where revocation is unavailable. PR 6 leaves the taxonomy unchanged.</p>
+    </article>
+
+    <article class="uc" id="c5">
+      <header><span class="id">C5</span><h3>Resolution and anchoring in one deployment</h3><span class="by">Lars Kersten Kroehl, issue 9</span></header>
+      <p>A relying party resolves <code>did:moltrust:…</code> while MolTrust's resolver is down and Base is reachable.</p>
+      <div class="pair">
+        <div><h4>Current draft</h4><p>Annex B says resolution is unspecified.</p></div>
+        <div><h4>With the correction</h4><p>The method is registered with an operator-hosted HTTPS read operation, so resolution fails with the resolver whatever the state of Base. Base only anchors records.</p></div>
+      </div>
+      <p class="verdict"><span class="v ok">Resolves</span>The registry entry is live. Revise Annex B and keep the case as an illustration of the separation in §3.</p>
+    </article>
+
+    <article class="uc" id="c6">
+      <header><span class="id">C6</span><h3>Evidence resolves too</h3><span class="by">Kenne Ives, issue 10. Relevant to I3, I8.</span></header>
+      <p>A presents a verdict that tool T was reviewed. T's definition changes a week later.</p>
+      <div class="pair">
+        <div><h4>Current draft</h4><p>Models only the identity document.</p></div>
+        <div><h4>With the amendment</h4><p>A verdict bound to T's name still verifies and misleads. A verdict bound to the hash of T's definition fails once T changes. A validity window separates "valid now" from "valid when issued".</p></div>
+      </div>
+      <p class="verdict"><span class="v ok">Resolves</span>Extend group A to evidence artefacts, with any product example labelled as deployment evidence.</p>
+    </article>
+
+    <article class="uc" id="c7">
+      <header><span class="id">C7</span><h3>Identity read as permission</h3><span class="by">Raphael La Touche, Innocent Onyenonachi. Relevant to I2, I6, S5.</span></header>
+      <p>B receives A's request to refund €500 on X's behalf, and A's DID verifies.</p>
+      <div class="pair">
+        <div><h4>Current draft</h4><p>Nothing records what a verified DID establishes, so "A verified" can pass for "A may do this".</p></div>
+        <div><h4>With the amendment</h4><p>The identity artefact proves key control; X's mandate proves permission; a receipt proves what happened; an accountability record names who answers for it.</p></div>
+      </div>
+      <p class="verdict"><span class="v ok">Resolves</span>The matrix belongs in the specification proper, beyond the resolution note.</p>
+    </article>
+
+    <article class="uc" id="c8">
+      <header><span class="id">C8</span><h3>Same bytes, same thing?</h3><span class="by">Thanh Le, Kenne Ives, Amey Parle, Staford Titus S.</span></header>
+      <p>An auditor compares two receipts from different producers.</p>
+<pre class="mini">(a) {"agent":"café"} precomposed é  vs  {"agent":"café"} e + combining accent
+    same agent, different canonical bytes        → false conflict (fails closed)
+(b) {"agent":9007199254740993}  vs  {"agent":9007199254740992}
+    two agents; read as floating point, both become 9007199254740992
+    identical canonical bytes                    → false match (fails open)
+(c) {"refund":500}  X means euros, Y means cents
+    identical canonical bytes, different actions → false match (fails open)</pre>
+      <div class="pair">
+        <div><h4>Current draft</h4><p>No comparison property.</p></div>
+        <div><h4>With the amendment</h4><p>A stated normalization form catches (a). Case (b) is a silent collision a verifier cannot see, so stating how large integers are encoded is insufficient and string encoding is mandatory. Case (c) passes the four originally proposed properties and is caught by declared semantics (units, namespace, schema reference).</p></div>
+      </div>
+      <p class="verdict"><span class="v ok">Resolves</span>The comparison column now requires string encoding for identifiers outside the exact-integer range, following RFC 8785 as cited on the list, and adds declared semantics as a fifth property. <a href="https://github.com/giskard09/draft-etcheverry-action-ref/pull/7">Conformance vectors</a> for the three cases state the failure mode of each vector and are anchored to the RFC 8785 reference data.</p>
+      <p class="correction"><b>Corrected on the list, 17 September 2026.</b> An earlier message had described both canonicalization failures as failing closed. Amey Parle <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0027.html">confirmed on public-aikr</a> that only case (a) fails closed and case (b) fails open, called (b) the more dangerous of the two, and agreed to declared semantics as a fifth property.</p>
+    </article>
+
+    <article class="uc" id="c9">
+      <header><span class="id">C9</span><h3>Traceable and still out of mandate</h3><span class="by">Staford Titus S. Relevant to I9, S4, S5.</span></header>
+      <p>X lets A spend up to €500 until month end. A delegates to B with a €5,000 limit, and B spends €2,000. In a variant, X revokes A at 10:00, B's delegation runs to 12:00, and B acts at 11:00.</p>
+      <div class="pair">
+        <div><h4>Current draft</h4><p>Out of scope. Every identity verifies and the chain is traceable.</p></div>
+        <div><h4>With the amendment</h4><p>A scope check at each hop catches the €5,000 grant. Downstream revocation catches the 11:00 action. Provenance alone catches neither.</p></div>
+      </div>
+      <p class="verdict"><span class="v open">Open</span>Sound, and partly covered by capability systems with attenuation (macaroons, UCAN, Biscuit), OAuth token exchange and Morgan Reece's cross-organisation delegation requirements. Mapping should start from those.</p>
+    </article>
+
+    <article class="uc" id="c10">
+      <header><span class="id">C10</span><h3>Declared call, different effect</h3><span class="by">Syed Anas Mohiuddin, Amey Parle. Relevant to I1, I5.</span></header>
+      <p>B may call T's refund-status operation and not its administrative endpoints. T inserts an identifier from the call into an outbound URL unescaped, and a crafted identifier resolves to an administrative path.</p>
+      <div class="pair">
+        <div><h4>Current draft</h4><p>No notion of what an attestation is bound to.</p></div>
+        <div><h4>With the amendment</h4><p>An attestation over the declared call verifies and describes an action that never ran. One over the request as sent, produced outside T, shows the administrative path.</p></div>
+      </div>
+      <p class="verdict"><span class="v open">Open</span>Representation can state the binding point. Closing the gap needs escaping in the server and receipts from a component the argument cannot reach.</p>
+    </article>
+
+    <p class="small">No test is given for Milton Ponson's category-theory proposal, which awaits a worked example.</p>
+  </section>
+</div>
+
+<!-- ============ TAB 4 ============ -->
+<div class="panel" id="thread" role="tabpanel" aria-labelledby="t-thread" hidden>
+  <div class="intro">
+    <h2>Thread and work plan</h2>
+    <p class="lede">The discussion so far, the model it has produced, who contributed what, open repository items, and a route from here to a specification.</p>
+    <p class="small">Draft under discussion: <a href="https://github.com/w3c-cg/aikr/blob/main/trust/kroftrust.md">trust/kroftrust.md</a>. Covers the thread from early August to mid-September 2026.</p>
+    <p class="small">Thread: <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Aug/0000.html">opening message on public-aikr</a> (cross-posted to <a href="https://lists.w3.org/Archives/Public/public-agent-identity/2026Aug/0000.html">public-agent-identity</a>); <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/thread.html">September continuation on public-aikr</a>; <a href="https://mailarchive.ietf.org/arch/msg/wimse/i08QgArGrcAwFQ7kHFW6U9ZtRCA">reply on the IETF WIMSE list</a>.</p>
+  </div>
+
+  <section>
+    <h2>How the argument developed</h2>
+    <div class="prose">
+      <p class="lede">The discussion started with <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Aug/0000.html">a message to the public-aikr list</a> on 3 August introducing the draft. The draft argues that agent-identity charters model the trust relationship and leave unmodelled the place an agent's identity document is fetched from when a counterparty checks a claim.</p>
+      <p>It names three arrangements (distributed ledger, operator-controlled domain, third-party registry) and asks each group a set of questions. Early responses answer five; the current draft carries six, having added a separate question on anchoring.</p>
+      <p>In August, Patrick Besner asked the group to state the guarantees any substrate must meet: resolution, provenance, revocation, freshness and failure handling. Isaac Mao separated integrity from availability and extended the question to evidence. Lars Kersten Kroehl answered for MolTrust path by path. One path fetches nothing at verification time; an older path queries Base on every check. For him the chain supplies a dated hash, which an RFC 3161 timestamp or a transparency log could also supply, and some agents and developers have no lawful access to public chains at all. Kenne Ives applied Isaac's split to tool-safety verdicts.</p>
+      <p>Morgan Reece <a href="https://mailarchive.ietf.org/arch/msg/wimse/i08QgArGrcAwFQ7kHFW6U9ZtRCA">replied on the IETF WIMSE list</a> for <em>draft-reece-wimse-cross-org-delegation</em>, copying the chair and Lars, and divided the variable into topology and coupling. Tail latency and partition behaviour follow from coupling. With verification from conveyed and cached material under a stated staleness bound, a failed or captured source can only withhold refreshes, and the agent expires when the bound runs out. Morgan also noted that a lookup on every verification tells the resolver when and where an agent acts, and proposed a four-part disclosure per verification path.</p>
+      <p>September moved the discussion onto the AIKR list and widened it. Innocent Onyenonachi and Kenne proposed a row per artefact type. Raphael La Touche pointed out that identity, authority, evidence and responsibility prove different propositions. Thanh Le asked what makes two artefacts comparable; Kenne answered with canonicalization, and Staford Titus S. and Amey Parle showed that canonical bytes establish the same document and leave open whether two documents concern the same thing. Amey later <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0027.html">corrected his account on the list</a>: a Unicode mismatch fails closed, while large integers carried as JSON numbers collide silently and fail open. Staford introduced authority continuity. Syed Anas Mohiuddin reported MCP servers where a correctly scoped, validly attested call executes a different operation.</p>
+      <p>The chair asked contributors to state ties to agent platforms. Lars described MolTrust's link to openclaw and moltbook as the origin of its name plus a plugin, with no legal or financial connection. The chair's latest message asks whether declaring associations is represented anywhere, and holds that trust depends on behaviour staying consistent with the schema.</p>
+      <p>The same day, Nicholas Templeman reported a fault of the same kind in his organisation's transparency log: a forged record set of a different size produced the same root and passed every check except the record count. His lesson for the group is that a property that fails open has to be tested with an input built to defeat it. Amey, <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0030.html">replying</a>, explained why string encoding beats rejecting number-typed identifiers and reported his test vectors merged. Evgenii Arsentev <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0028.html">brought in</a> the Agent Conformance group's split between consistency checks and evidence checks, and proposed counting records that carry their evidence against those that only point to it. Syed Anas Mohiuddin <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0029.html">added</a> that the logs of the servers he audits record the call as declared, so receipts must carry the resolved target. Kenne Ives <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0023.html">agreed</a> that byte equality settles only what was declared.</p>
+      <p>Every contributor who addressed it agreed that a digital identity certificate alone does not establish trust.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>The model taking shape</h2>
+    <div class="prose"><p>Rows are artefact classes; column groups are properties a relying party needs stated for each row. Groups G and H come from the use cases in tab 3.</p></div>
+    <div class="tw"><table class="wide">
+      <thead><tr><th>Axis</th><th>Content</th><th>Raised by</th></tr></thead>
+      <tbody>
+        <tr><td>Rows</td><td>Identity document; mandate and delegation; declarations; evidence and verdicts; receipts; accountability records; key status; agent configuration and memory</td><td>Innocent Onyenonachi, Kenne Ives, Raphael La Touche; use cases</td></tr>
+        <tr><td>A. Resolution and integrity</td><td>Topology; coupling; integrity resolution; availability resolution; staleness bound; revocation; governance of the source; observation by the resolver</td><td>Draft §3, Isaac Mao, Morgan Reece, Ankur Chrungoo, Patrick Besner</td></tr>
+        <tr><td>B. Proposition</td><td>What the artefact can prove; self-asserted or third-party attested</td><td>Raphael La Touche, Kenne Ives</td></tr>
+        <tr><td>C. Comparison</td><td>Canonical form; Unicode normalization; mandatory string encoding for large identifiers; recomputable derivation; declared semantics (units, namespace, schema reference)</td><td>Thanh Le, Kenne Ives, Amey Parle</td></tr>
+        <tr><td>D. Authority continuity</td><td>Provenance; attenuation at each hop; revocation propagated downstream; action tied to the mandate</td><td>Staford Titus S., Kenne Ives</td></tr>
+        <tr><td>E. Binding point</td><td>Declared call, request as sent, or observed effect; resolved target carried in the receipt; consistency and evidence checks kept apart; count of carried and referenced evidence</td><td>Syed Anas Mohiuddin, Amey Parle, Evgenii Arsentev</td></tr>
+        <tr><td>F. Coverage and disclosure</td><td>What the issuer vouches for and leaves unchecked; subject declarations; "cannot disclose"; three-valued evaluation</td><td>The chair (S1)</td></tr>
+        <tr><td>G. Enforcement and oversight</td><td>Enforcement point; evidence of enforcement; environment claim; monitoring coverage; stop channel; configuration integrity</td><td>Use cases I1, I8 to I10, S2, S3, S7</td></tr>
+        <tr><td>H. Instance and attribution</td><td>Instance identifier; operator of record; attribution in receipts; coordination channels; authorship</td><td>Use cases I7, I9, S4</td></tr>
+        <tr><td>Unit of record</td><td>Each verification path, recorded separately</td><td>Lars Kersten Kroehl, Morgan Reece</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Ontology skeleton</h2>
+    <div class="prose">
+      <p>The property groups above are expressed in a draft vocabulary, the KR for Trust Ontology (KRT). It records a trust decision: a relying party's judgement about one proposition, for one action, at one time, with an outcome of yes, no or unknown and a stated policy for unknown. Eleven design rules come with it as SHACL shapes, so decision records can be checked mechanically. The skeleton was derived from case work on documented agent incidents, read against this thread.</p>
+      <p><a href="https://w3c-cg.github.io/aikr/trust/krt.html">KRT skeleton v0.1</a>: classes, properties, controlled values, rules and a worked example.</p>
+    </div>
+    <div class="krtdia">
+      <svg viewBox="0 0 760 300" role="img" aria-label="A trust decision links a relying party, a subject, a proposition, an action, evidence, a channel, a policy and an outcome">
+        <g font-family="Archivo, sans-serif" font-size="13" text-anchor="middle">
+          <g stroke="#8d6e1d" stroke-width="1.3" fill="none"><path d="M380 150L130 60M380 150L130 150M380 150L130 240M380 150L630 60M380 150L630 150M380 150L630 240M380 150L380 40M380 150L380 262"/></g>
+          <rect x="300" y="126" width="160" height="48" rx="4" fill="#16264a"/>
+          <text x="380" y="155" fill="#e3c878" font-weight="700">TrustDecision</text>
+          <g fill="#eeede9" stroke="#8d6e1d">
+            <rect x="50" y="42" width="160" height="36" rx="3"/><rect x="50" y="132" width="160" height="36" rx="3"/><rect x="50" y="222" width="160" height="36" rx="3"/>
+            <rect x="550" y="42" width="160" height="36" rx="3"/><rect x="550" y="132" width="160" height="36" rx="3"/><rect x="550" y="222" width="160" height="36" rx="3"/>
+            <rect x="310" y="8" width="140" height="34" rx="3"/><rect x="275" y="258" width="210" height="34" rx="3"/>
+          </g>
+          <g fill="#1d1f24">
+            <text x="130" y="65">RelyingParty</text><text x="130" y="155">Party (subject)</text><text x="130" y="245">Channel</text>
+            <text x="630" y="65">Proposition</text><text x="630" y="155">Action</text><text x="630" y="245">Artefact (evidence)</text>
+            <text x="380" y="30">TrustPolicy</text><text x="380" y="280">Outcome: yes | no | unknown</text>
+          </g>
+          <g fill="#595b61" font-size="11" stroke="#eeede9" stroke-width="5" paint-order="stroke" stroke-linejoin="round">
+            <text x="222" y="96">relyingParty</text><text x="245" y="144">subject</text><text x="222" y="206">presentedVia</text>
+            <text x="540" y="96">proposition</text><text x="515" y="144">forAction</text><text x="540" y="206">usesEvidence</text>
+            <text x="420" y="92">appliesPolicy</text><text x="415" y="226">outcome</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <h2>Contributors</h2>
+    <div class="prose"><p>Affiliations as each contributor stated them.</p></div>
+    <div class="tw"><table class="wide">
+      <thead><tr><th>Contributor</th><th>Affiliation as stated</th><th>Contribution</th><th>Offer or open item</th></tr></thead>
+      <tbody>
+        <tr><td>Paola Di Maio</td><td>Chair, AIKR CG</td><td>Draft note; trust KR as first agenda item; questions on platform affiliations and on who works on trust credentials; DNS-dependency note; request for plain-language summaries with use cases; use case S1.</td><td>Collation; weekly calls from 21 September</td></tr>
+        <tr><td>Patrick Besner</td><td>Novosteer Technologies</td><td>State the guarantees a trust layer must provide and assess every substrate against them.</td><td>GitHub comments, not yet posted</td></tr>
+        <tr><td>Isaac Mao</td><td>neocarbone.ai</td><td>Integrity resolution separated from availability resolution; applied to belief-state evidence.</td><td>PR 7, PR 4</td></tr>
+        <tr><td>Lars Kersten Kroehl</td><td>MolTrust, CryptoKRI GmbH, Zürich</td><td>Answers per verification path; chain as one anchoring backend; jurisdictional access; openclaw and moltbook clarification.</td><td>Issue 9</td></tr>
+        <tr><td>Morgan Reece</td><td>Author, draft-reece-wimse-cross-org-delegation (IETF)</td><td>Topology and coupling; fail-safe expiry; lookups as observation; four-part disclosure per path.</td><td>Template usable in §5</td></tr>
+        <tr><td>Kenne Ives</td><td>AgentAvow; CTEF; draft-etcheverry-action-ref (IETF)</td><td>Evidence resolution; two-axis crosswalk; comparison by re-derivation; authority continuity in four parts.</td><td>Issue 10; comparison subsection; conformance vectors; <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0026.html">will join calls</a> on comparison semantics</td></tr>
+        <tr><td>Innocent C. Onyenonachi</td><td>Keele University; SUBRA</td><td>Identity evidence is not a trust conclusion; separate artefact classes.</td><td>Artefact crosswalk, in preparation</td></tr>
+        <tr><td>Raphael La Touche</td><td>latouche.ai</td><td>Resolution and proposition as separate dimensions. Visible on the list as a quotation in a reply.</td><td>None stated</td></tr>
+        <tr><td>Thanh Le</td><td>Not stated</td><td>Comparison semantics as a property.</td><td>None stated</td></tr>
+        <tr><td>Milton Ponson</td><td>Not stated</td><td>Topology and category theory as a basis for comparison.</td><td>Worked example requested</td></tr>
+        <tr><td>Staford Titus S.</td><td>Charlemagne</td><td>Authority continuity with adversarial cases; canonicalization as representation only.</td><td>GitHub note, scenarios, slides</td></tr>
+        <tr><td>Amey Parle</td><td>Lead maintainer, did:trail</td><td>Canonicalization failure classes, <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0027.html">corrected on the list</a> to show that large integers fail open; comparison column, extended with declared semantics.</td><td>§4 subsection with Kenne Ives; <a href="https://github.com/giskard09/draft-etcheverry-action-ref/pull/7">conformance vectors</a> published; <a href="https://github.com/giskard09/draft-etcheverry-action-ref/tree/main/conformance/trail">vectors merged</a>, each labelled fails open or fails closed; available for a comparison-semantics session</td></tr>
+        <tr><td>Syed Anas Mohiuddin</td><td>MCP server auditing</td><td>Declared call and executed effect can diverge; logs record the declared call, so receipts must carry the resolved target.</td><td>Adversarial vectors after disclosure; <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0029.html">pattern write-up</a> across servers without vendor names</td></tr>
+        <tr><td>Evgenii Arsentev</td><td>CEO, AI transformation; Agent Conformance group</td><td>Consistency checks versus evidence checks; no declared value read as fact; a count of carried versus referenced evidence.</td><td><a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0028.html">Contributes on the list</a></td></tr>
+        <tr><td>Nicholas Templeman</td><td>CSOAI Ltd</td><td>A fail-open collision in a transparency log root; bind the record count; test fail-open properties with constructed inputs.</td><td><a href="https://huggingface.co/datasets/csoai/councilof-ai-mirror/tree/main/corrections">Reproduction</a> with verifier and failing control; message quoted in <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/0030.html">Amey Parle's reply</a></td></tr>
+        <tr><td>Ankur Chrungoo</td><td>AIKR CG participant</td><td>Typed attributes; PACELC; governance attribute; tail amplification.</td><td>Issue 8; offers a PR</td></tr>
+        <tr><td>Agent Community</td><td>Agent Community (formerly V19); Truth Gate</td><td>Answers to the six questions, in Chinese.</td><td>Issue 5, PR 6</td></tr>
+        <tr><td>Wolfgang Wimmer</td><td>Editor, A2WF v1.1</td><td>Editor's note on the A2WF intersection document.</td><td>PR 2</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Does the draft note hold?</h2>
+    <div class="tw"><table class="wide">
+      <thead><tr><th>Weakness in the representation</th><th>Addressed by</th><th>State</th></tr></thead>
+      <tbody>
+        <tr><td>One notion of substrate</td><td>§3; PR 7; Morgan Reece</td><td><span class="v ok">Resolves</span></td></tr>
+        <tr><td>Properties stated only in prose</td><td>Issue 8; Morgan's template</td><td><span class="v ok">Resolves</span></td></tr>
+        <tr><td>Whole system as unit of record</td><td>Lars Kersten Kroehl; Morgan Reece</td><td><span class="v ok">Resolves</span></td></tr>
+        <tr><td>Resolver as observer</td><td>Morgan Reece</td><td><span class="v ok">Resolves</span></td></tr>
+        <tr><td>Annex B on did:moltrust</td><td>Issue 9</td><td><span class="v ok">Resolves</span></td></tr>
+        <tr><td>Identity document as the only artefact</td><td>Issue 10</td><td><span class="v ok">Resolves</span></td></tr>
+        <tr><td>Identity read as authority</td><td>Raphael La Touche; Innocent Onyenonachi</td><td><span class="v ok">Resolves</span></td></tr>
+        <tr><td>Self-certifying identifiers</td><td>Issue 5</td><td><span class="v part">Partly</span></td></tr>
+        <tr><td>Comparability</td><td>Thanh Le; Kenne Ives; Amey Parle, with a correction on the list</td><td><span class="v ok">Resolves</span></td></tr>
+        <tr><td>Authority across delegation</td><td>Staford Titus S.</td><td><span class="v open">Open</span></td></tr>
+        <tr><td>Declared call against executed effect</td><td>Syed Anas Mohiuddin; Evgenii Arsentev</td><td><span class="v open">Open</span></td></tr>
+        <tr><td>Activity outside the declared mandate</td><td>The chair (S1)</td><td><span class="v open">Open</span></td></tr>
+        <tr><td>Behaviour consistent with declarations</td><td>Use cases; no proposal yet</td><td><span class="v open">Open</span></td></tr>
+        <tr><td>Attribution across instances</td><td>Use cases; no proposal yet</td><td><span class="v open">Open</span></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Issues and pull requests</h2>
+    <div class="tw"><table class="wide">
+      <thead><tr><th>Item</th><th>From</th><th>Content</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://github.com/w3c-cg/aikr/issues/5">Issue 5</a></td><td>Agent Community</td><td>Answers to the six questions: DNS-anchored DIDs for long-lived agents, self-certifying keys for short-lived sub-agents, Merkle-chain anchoring, latency table, tiered fallback, ledger for audit anchoring only.</td><td>Open</td></tr>
+        <tr><td><a href="https://github.com/w3c-cg/aikr/issues/8">Issue 8</a></td><td>Ankur Chrungoo</td><td>Typed integrity and staleness attributes; PACELC and governance; tail amplification.</td><td>Open; contributor offers a PR</td></tr>
+        <tr><td><a href="https://github.com/w3c-cg/aikr/issues/9">Issue 9</a></td><td>Lars Kersten Kroehl</td><td>Correction to Annex B on <code>did:moltrust</code> resolution, with disclosure of interest.</td><td>Open</td></tr>
+        <tr><td><a href="https://github.com/w3c-cg/aikr/issues/10">Issue 10</a></td><td>Kenne Ives; comment by Amey Parle</td><td>Resolution properties for verdict evidence; comparison column; test vectors.</td><td>Open; correction and vectors posted on the list</td></tr>
+        <tr><td><a href="https://github.com/w3c-cg/aikr/pull/2">PR 2</a></td><td>Wolfgang Wimmer</td><td>Editor's note on <code>A2WF/intersection.md</code>; ODRL 2.2 date.</td><td>Open</td></tr>
+        <tr><td><a href="https://github.com/w3c-cg/aikr/pull/4">PR 4</a></td><td>Isaac Mao</td><td>Glossary terms marked as draft CG extensions.</td><td>Open</td></tr>
+        <tr><td><a href="https://github.com/w3c-cg/aikr/pull/6">PR 6</a></td><td>Agent Community</td><td>Editorial emphasis, DIF traits, checklist note.</td><td>Open; chair's questions posted</td></tr>
+        <tr><td><a href="https://github.com/w3c-cg/aikr/pull/7">PR 7</a></td><td>Isaac Mao</td><td>§3.1 on integrity and availability.</td><td>Open; chair's request for a source posted</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Route to a specification</h2>
+    <div class="prose"><p>The draft note stays as the motivating document on resolution dependency. The specification is a separate text built from the use cases, with every requirement traceable to one of them.</p></div>
+    <ol class="route">
+      <li><b>Fix the vocabulary.</b> Circulate tab 2 for comment and adopt it as the terms section. Contributors write in these terms from then on.</li>
+      <li><b>Close the note's open items.</b> Work through the open repository items with their authors and update the note.</li>
+      <li><b>Open the use-case register.</b> Publish I1 to I10 and S1 to S7 in the repository and invite additions in one format: what happened, what could not be relied on, why, and what the trust layer needs.</li>
+      <li><b>Assign property groups.</b> Ask contributors to take a group each, starting with the unaddressed ones (G and H), and to express each property as a named attribute with permitted values.</li>
+      <li><b>Draft the specification.</b> Sections: terms; artefact classes; property groups A to H; three-valued evaluation and policy on unknown; disclosure per verification path; conformance with test vectors tied to use cases.</li>
+      <li><b>Test against the register.</b> For each use case, show which properties a relying party would have needed and whether the draft lets it state them.</li>
+      <li><b>Set the consultation close.</b> The draft note still lists its closing date as to be announced. The weekly calls from 21 September are the place to agree it.</li>
+    </ol>
+  </section>
+</div>
+
+</main>
+
+<footer>
+  Sources: <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Aug/0000.html">thread opening</a> and <a href="https://lists.w3.org/Archives/Public/public-aikr/2026Sep/thread.html">continuation</a> in the W3C public-agent-identity and public-aikr archives; IETF WIMSE archive; github.com/w3c-cg/aikr; W3C DID Extensions registry; incident reports linked in tab 3. Prepared by the Epistemic Systems Lab for the AIKR CG. Corrections via GitHub issue and a note to public-aikr.<br>
+  © Copyright Paola Di Maio, ESL Labs
+</footer>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll('[role="tab"]'));
+  var panels=tabs.map(function(t){return document.getElementById(t.getAttribute('aria-controls'));});
+  function show(i,focus,push){
+    tabs.forEach(function(t,j){
+      var on=j===i;
+      t.setAttribute('aria-selected',on?'true':'false');
+      t.tabIndex=on?0:-1;
+      panels[j].hidden=!on;
+    });
+    if(focus)tabs[i].focus();
+    if(push){try{history.replaceState(null,'','#'+panels[i].id);}catch(e){}}
+  }
+  tabs.forEach(function(t,i){
+    t.addEventListener('click',function(){show(i,false,true);window.scrollTo({top:document.querySelector('.tabbar').offsetTop,behavior:'auto'});});
+    t.addEventListener('keydown',function(e){
+      var k=e.key,n=tabs.length,j=null;
+      if(k==='ArrowRight')j=(i+1)%n; else if(k==='ArrowLeft')j=(i-1+n)%n; else if(k==='Home')j=0; else if(k==='End')j=n-1;
+      if(j!==null){e.preventDefault();show(j,true,true);}
+    });
+  });
+  function fromHash(){
+    var h=(location.hash||'').slice(1); if(!h)return;
+    var target=document.getElementById(h); if(!target)return;
+    for(var i=0;i<panels.length;i++){
+      if(panels[i]===target||panels[i].contains(target)){
+        show(i,false,false);
+        if(target!==panels[i])setTimeout(function(){target.scrollIntoView();},0);
+        return;
+      }
+    }
+  }
+  window.addEventListener('hashchange',fromHash);
+  fromHash();
+})();
+
+(function(){
+  var fu=document.getElementById('f-uc'),fg=document.getElementById('f-g'),fs=document.getElementById('f-s');
+  if(!fu)return;
+  var rows=[].slice.call(document.querySelectorAll('table.trace tbody tr'));
+  var cnt=document.getElementById('f-count'),note=document.getElementById('f-gapnote');
+  function apply(){
+    var u=fu.value,g=fg.value,st=fs.value,n=0;
+    rows.forEach(function(r){
+      var ok=(!u||(' '+r.dataset.uc+' ').indexOf(' '+u+' ')>-1)&&(!g||r.dataset.g.split(', ').indexOf(g)>-1)&&(!st||r.dataset.s===st);
+      r.hidden=!ok; if(ok)n++;
+    });
+    cnt.textContent=n+' of '+rows.length+' rows';
+    if(u){
+      var gaps=rows.filter(function(r){return !r.hidden&&r.dataset.s==='gap';}).length;
+      note.hidden=false;
+      note.textContent=n===0?('No weak point in the trace is linked to '+u+' yet.'):(u+': '+n+(n>1?' weak points apply, ':' weak point applies, ')+(gaps===0?'none':gaps)+' still without an owner.');
+    } else note.hidden=true;
+  }
+  [fu,fg,fs].forEach(function(x){x.addEventListener('change',apply);});
+  document.getElementById('f-reset').addEventListener('click',function(){fu.value='';fg.value='';fs.value='';apply();});
+  apply();
+})();
+</script>
+</body>
+</html>
