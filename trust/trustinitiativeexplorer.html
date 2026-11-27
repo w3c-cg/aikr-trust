@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent Trust Protocols and Specifications Explorer — W3C AIKR CG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --loom: #1b1f3a; --gilt: #c9a227; --bronze: #8a6a2f; --violet: #5b2a86; --orchid: #b565a7;
+    --teal: #1f7a7a; --crimson: #a3253b; --stone: #ecebe7; --paper: #f8f7f4; --ink: #1c1b19;
+    --muted: #5d5a54; --rule: #cfccc4;
+  }
+  * { box-sizing: border-box; min-width: 0; }
+  body { margin: 0; background: var(--stone); color: var(--ink); font-family: "Archivo", system-ui, sans-serif; font-size: 15px; line-height: 1.5; overflow-x: clip; }
+  a { color: var(--violet); }
+  a:hover { color: var(--crimson); }
+  header.banner { background: var(--loom); color: var(--gilt); padding: 28px 0 0; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+  .kicker { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #d9c98f; }
+  header h1 { font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: clamp(30px, 4.2vw, 46px); line-height: 1.05; margin: 6px 0 10px; text-wrap: balance; }
+  header p.lede { color: #e8e2cc; max-width: 780px; margin: 0 0 22px; font-family: "Newsreader", serif; font-size: 18px; }
+  .weave { height: 14px; background: repeating-linear-gradient(90deg, var(--gilt) 0 14px, var(--violet) 14px 28px, var(--orchid) 28px 42px, var(--teal) 42px 56px), var(--loom);
+    -webkit-mask: repeating-linear-gradient(0deg, #000 0 7px, rgba(0,0,0,.45) 7px 14px); mask: repeating-linear-gradient(0deg, #000 0 7px, rgba(0,0,0,.45) 7px 14px); }
+  .meta { font-size: 13px; color: var(--muted); padding: 14px 0 10px; border-bottom: 1px solid var(--rule); }
+  .meta a { font-weight: 600; }
+  h2 { font-family: "Newsreader", serif; font-weight: 600; font-size: 28px; margin: 0; }
+  .note { color: var(--muted); font-family: "Newsreader", serif; font-style: italic; font-size: 16px; margin: 2px 0 14px; max-width: 900px; }
+  section.band { padding: 22px 0 8px; border-top: 3px solid var(--ink); margin-top: 22px; }
+
+  .scale { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 28px; margin: 6px 0 4px; }
+  .scale h3 { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin: 10px 0 6px; font-weight: 600; }
+  .scale ol { margin: 0; padding-left: 0; list-style: none; font-size: 14px; }
+  .scale li { padding: 3px 0; border-bottom: 1px dotted var(--rule); }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 14px 26px; align-items: flex-end; padding: 16px 0 10px; }
+  .group-label { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { font: inherit; font-size: 13px; border: 1px solid var(--rule); background: var(--paper); padding: 6px 11px; border-radius: 2px; cursor: pointer; color: var(--ink); min-height: 34px; }
+  .chip[aria-pressed="true"] { background: var(--loom); color: var(--gilt); border-color: var(--loom); }
+  .chip:focus-visible, input:focus-visible, button:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+  input[type="search"] { font: inherit; font-size: 16px; padding: 6px 10px; border: 1px solid var(--rule); background: var(--paper); width: 240px; border-radius: 2px; min-height: 34px; }
+  .count { font-size: 13px; color: var(--muted); margin-left: auto; }
+
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; background: var(--paper); }
+  th, td { text-align: left; vertical-align: top; padding: 9px 10px; border-bottom: 1px solid var(--rule); }
+  thead th { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; background: #e3e1db; position: sticky; top: 0; }
+  td.spec strong { font-family: "Newsreader", serif; font-size: 17px; font-weight: 600; display: block; line-height: 1.2; }
+  td.spec .venue { font-size: 12px; color: var(--bronze); text-transform: uppercase; letter-spacing: .06em; }
+  td.spec p { margin: 4px 0 0; color: var(--ink); }
+  .draft a { display: block; margin-bottom: 3px; overflow-wrap: anywhere; }
+  .stage, .ev { display: inline-block; font-size: 12px; padding: 2px 7px; border-radius: 2px; border: 1px solid currentColor; white-space: nowrap; }
+  .s0 { color: #8a8780; } .s1 { color: var(--bronze); } .s2 { color: var(--violet); } .s3 { color: var(--teal); } .s4 { color: var(--crimson); }
+  .e0 { color: #8a8780; } .e1 { color: var(--bronze); } .e2 { color: var(--teal); background: #e3f0ef; }
+  .ver { display: block; font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+  .evnote { display: block; font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+
+  .matrix td.c { text-align: center; font-size: 18px; line-height: 1; }
+  .dot2 { color: var(--violet); } .dot1 { color: var(--orchid); } .dot0 { color: #c4c1b9; }
+  .matrix th.c { text-align: center; }
+  .matrix tfoot td { font-size: 12.5px; color: var(--muted); background: #f1efea; }
+
+  .findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 28px; }
+  .findings div { border-top: 1px solid var(--rule); padding: 12px 0; }
+  .findings h3 { font-family: "Newsreader", serif; font-size: 19px; margin: 0 0 4px; font-weight: 600; }
+  .findings p { margin: 0; }
+
+  .corollary { columns: 2 340px; column-gap: 32px; }
+  .corollary div { break-inside: avoid; border-top: 1px solid var(--rule); padding: 9px 0; }
+  .corollary .k { font-size: 11.5px; color: var(--bronze); text-transform: uppercase; letter-spacing: .06em; }
+  .corollary a { font-weight: 600; }
+  .corollary p { margin: 2px 0 0; font-size: 14px; }
+
+  footer { border-top: 3px solid var(--ink); margin-top: 36px; padding: 16px 0 40px; font-size: 13px; color: var(--muted); }
+  .empty { padding: 20px 0; color: var(--muted); font-style: italic; }
+
+  @media (max-width: 760px) {
+    table.stack thead { display: none; }
+    table.stack tr { display: grid; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+    table.stack td { border: 0; padding: 3px 0; }
+    table.stack td::before { content: attr(data-l); display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+    input[type="search"] { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="banner">
+  <div class="wrap">
+    <div class="kicker">W3C AI Knowledge Representation Community Group · Trust</div>
+    <h1>Agent Trust Protocols and Specifications Explorer</h1>
+    <p class="lede">Draft protocols and specifications that define how an AI agent is identified, what it is authorised to do, and how that authority is checked, revoked and evidenced. Each entry links to its draft and states how far the text and its evidence have got.</p>
+  </div>
+  <div class="weave" aria-hidden="true"></div>
+</header>
+
+<main class="wrap">
+  <div class="meta">
+    Checked against each specification's own pages and drafts, and the Agentic Standards Map, on 18 November 2026. Corrections, new entries and status updates:
+    open an issue or pull request on the <a href="https://github.com/w3c-cg/aikr/blob/main/trust/trustinitiativeexplorer.html">source file</a>
+    (<a href="https://github.com/w3c-cg/aikr/issues/new?title=%5Btrustexplorer%5D%20">new issue</a>), or post to public-aikr@w3.org with [trustexplorer] in the subject.
+    Related: <a href="https://github.com/w3c-cg/aikr/blob/main/trust/kroftrust.md">KR for Trust note</a> ·
+    <a href="https://github.com/w3c-cg/aikr/blob/main/trust/trustvisualiser.html">AI Agent Trust Record spec</a> ·
+    <a href="https://github.com/w3c-cg/aikr/blob/main/ontologies/Agent_Ontologies_Explorer.html">Agent Ontologies Explorer</a> ·
+    <a href="https://github.com/w3c-cg/agent-identity/tree/main/approved-docs/landscape">Agent Identity CG landscape</a>
+  </div>
+
+  <section class="band" id="how">
+    <h2>How maturity is read</h2>
+    <p class="note">Two separate readings, so that a polished document with no outside check is not confused with a rough one that others have reproduced. The evidence scale is the one the AI Agent Trust Record spec uses for implementation reports, and matches the "how it can be checked" field of the Agent Identity CG landscape.</p>
+    <div class="scale">
+      <div><h3>Text stage</h3><ol>
+        <li><span class="stage s0">Planned</span> named in a charter, no draft text yet</li>
+        <li><span class="stage s1">Individual or input draft</span> published text from one author or one company, not adopted by a group</li>
+        <li><span class="stage s2">Group draft</span> adopted as a working-group or community-group document, or under a group's task force</li>
+        <li><span class="stage s3">Released version</span> a numbered release that implementers are told to build on</li>
+        <li><span class="stage s4">Standard</span> an RFC or W3C Recommendation (none listed yet)</li>
+      </ol></div>
+      <div><h3>Evidence</h3><ol>
+        <li><span class="ev e0">Documented</span> text only, or code with no published results</li>
+        <li><span class="ev e1">Run by contributor</span> results, demos or test vectors published by the authors</li>
+        <li><span class="ev e2">Independently rerun</span> someone outside the effort reproduced at least part of it from the published text</li>
+      </ol></div>
+    </div>
+  </section>
+
+  <section class="band" id="criteria">
+    <h2>Inclusion criteria</h2>
+    <p class="note">A protocol or specification is listed as core when it meets all of the following. Project owners can propose an entry, or a move between tiers, by opening an issue on the source file with links that show each point.</p>
+    <div class="scale"><div><ol>
+      <li>Defines agent identity, delegated authority, policy, lifecycle or evidence in its own text</li>
+      <li>Publishes an open specification that anyone can read and implement</li>
+      <li>Is developed in a working group, community group or task force open to outside contribution</li>
+      <li>Has a draft specification, preferably with use cases or test material</li>
+      <li>Carries weight beyond one author: a standards body, several implementers, or adoption</li>
+    </ol></div><div><ol>
+      <li><strong>Core</strong> meets all five</li>
+      <li><strong>Individual drafts</strong> publish open text, but are led by one author or company without an open group; listed so the community can follow them</li>
+      <li><strong>Corollary</strong> groups, guidance, closed or product specifications, and work with no draft yet</li>
+    </ol></div></div>
+  </section>
+
+  <section class="band" id="core">
+    <h2>Core protocols and specifications</h2>
+    <p class="note">Specifications whose text defines agent identity, delegated authority, policy, lifecycle or evidence. Columns on the right of the coverage table follow the field groups of the AI Agent Trust Record.</p>
+
+    <div class="controls" role="search">
+      <div><label class="group-label" for="q">Search</label><input type="search" id="q" placeholder="did:, delegation, MCP, revocation…"></div>
+      <div><span class="group-label">Text stage</span><div class="chips" id="f-stage"></div></div>
+      <div><span class="group-label">Evidence</span><div class="chips" id="f-ev"></div></div>
+      <div><span class="group-label">Covers</span><div class="chips" id="f-cov"></div></div>
+      <div class="count" id="count" aria-live="polite"></div>
+    </div>
+
+    <div class="scroll">
+      <table class="stack" id="core-table">
+        <thead><tr><th style="width:30%">Specification</th><th style="width:24%">Draft and version</th><th style="width:13%">Text stage</th><th style="width:33%">Evidence</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <h2 style="margin-top:26px">Individual drafts in community discussion</h2>
+    <p class="note">Open texts from a single author or company, discussed on W3C or IETF lists. Same filters apply.</p>
+    <div class="scroll">
+      <table class="stack" id="draft-table">
+        <thead><tr><th style="width:30%">Specification</th><th style="width:24%">Draft and version</th><th style="width:13%">Text stage</th><th style="width:33%">Evidence</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="band" id="coverage">
+    <h2>Coverage against the AI Agent Trust Record</h2>
+    <p class="note">What each specification's text addresses, mapped to the trust record's field groups (Identity, Interface, Mandate, Parties) and the trust assertion, with lifecycle and evidence added. ● specified in the draft, ◐ partial, planned or only in an attached profile, ○ not addressed in the text read.</p>
+    <div class="scroll">
+      <table class="matrix" id="matrix">
+        <thead><tr><th>Specification</th>
+          <th class="c" title="Agent name or identifier; agent type">Identity</th>
+          <th class="c" title="Protocol; where it lives; key publisher">Interface and keys</th>
+          <th class="c" title="Mandate / functions; authority; delegation">Mandate and authority</th>
+          <th class="c" title="Policy; constraints; admission rules">Policy</th>
+          <th class="c" title="Developer, deployer, user, owner, funder">Parties</th>
+          <th class="c" title="Validity, status, revocation">Lifecycle</th>
+          <th class="c" title="Receipts, audit logs, signed evidence">Evidence</th></tr></thead>
+        <tbody></tbody>
+        <tfoot><tr><td colspan="8">AIAO types the agent itself (role, capability, embodiment, interaction); none of the specifications listed carry an agent-type vocabulary, so the Identity column counts identifiers and bindings only. The trust record's Developer, Owner and Funder fields have no counterpart in any specification read.</td></tr></tfoot>
+      </table>
+    </div>
+  </section>
+
+  <section class="band" id="findings">
+    <h2>Reading the field</h2>
+    <div class="findings">
+      <div><h3>Few released texts</h3><p>ARIA 1.0, UCP and ANP-03 v1.1 are the only numbered releases. Web Bot Auth and WIMSE AIMS have working-group status at the IETF, and AuthZEN's Authorization API is a Final OpenID specification. Everything else is an individual or input draft.</p></div>
+      <div><h3>Independent checks are rare and narrow</h3><p>The did:atp identifier vectors were reproduced from the text by an outside implementer, covering identifier syntax, fingerprints and pairwise derivation only. The RTTP/IQA author reports clean-room recomputation of its vector family. No other entry shows an outside rerun.</p></div>
+      <div><h3>Authority is where drafts crowd</h3><p>AAE, AMEP, APS, NTI-1, ODIS, MCP-I, AuthZEN's agent drafts and ATP's mandate work each define delegated authority with their own structures. Identity binding converges on DIDs with Ed25519 or ML-DSA keys; authority does not converge.</p></div>
+      <div><h3>Parties are thin</h3><p>Specifications name a principal or an accountable organisation. None separates developer, deployer, owner and funder, the distinction the trust record and AIAO alignment need.</p></div>
+    </div>
+  </section>
+
+  <section class="band" id="corollary">
+    <h2>Corollary initiatives</h2>
+    <p class="note">Groups, labs, guidance and adjacent work to be aware of. They host, test, govern or surround the specifications above without themselves defining an agent trust protocol.</p>
+    <div class="corollary" id="corollary-list"></div>
+  </section>
+
+  <footer>
+    Compiled for the W3C AIKR CG Trust KR task force from the specifications' own pages, drafts and repositories, and from public posts to W3C community group lists. Stage and evidence readings are the compiler's and are open to correction by each specification's editors through the source file.
+    Community Group work is not a W3C Standard.
+  </footer>
+</main>
+
+<script>
+{
+const STAGES = ["Planned", "Individual or input draft", "Group draft", "Released version", "Standard"];
+const EVS = ["Documented", "Run by contributor", "Independently rerun"];
+const COLS = [["id","Identity"],["iface","Interface and keys"],["auth","Mandate and authority"],["pol","Policy"],["par","Parties"],["life","Lifecycle"],["ev","Evidence"]];
+
+const CORE = [
+  { tier: "core", name: "ARIA — Agent Registry for Identity & Authorization", venue: "TrustLayer Foundation · inspiration for the W3C Agent Identity Registry Protocol CG",
+    what: "Agent credentials as W3C Verifiable Credentials with a did:aria method, four trust levels (L0 self-declared to L3 sovereign), admission under ARIA AP, and revocation through a signed Bitstring Status List with an append-only Trust Ledger. The older Agent Trust Policy record is now a deprecated appendix.",
+    drafts: [["ARIA Specification 1.0", "https://aria.bar/spec"], ["CG landscape entry", "https://github.com/w3c-cg/agent-identity/tree/main/approved-docs/landscape"]],
+    ver: "1.0, edition of 1 Nov 2026 (first stable release 7 Sep 2026)", stage: 3, ev: 1,
+    evnote: "Public verifier at aria.bar/verify needs the ARIA resolver online and reads a demonstration issuer. L0 and L1 live, L2 and L3 in testing (CG landscape, 17 Nov 2026).",
+    cov: { id: 2, iface: 2, auth: 2, pol: 2, par: 2, life: 2, ev: 1 } },
+  { tier: "core", name: "ATP — Agent Trust Protocol suite", venue: "W3C Agent Trust Protocol CG",
+    what: "Four draft input documents published by the CG: the did:atp quantum-safe DID method (Ed25519 with ML-DSA-65), agent trust scoring and credentials, privacy-first interaction, and conformance and interoperability with a vendor-neutral test-vector format. The chair states that did:atp builds on did:wba, keeping DNS and HTTPS resolution while adding cryptographic identity bindings, and reports further draft work on revocable authorization mandates and runtime policy profiles.",
+    drafts: [["ATP specifications index", "https://w3c-cg.github.io/atp/specs/"], ["did:atp (draft, runnable proof and test vectors)", "https://w3c-cg.github.io/atp/specs/did-atp/"], ["Trust scoring and credentials (early draft)", "https://w3c-cg.github.io/atp/specs/atp-trust/"], ["Privacy-first interaction (early draft)", "https://w3c-cg.github.io/atp/specs/atp-privacy/"], ["Conformance and interoperability (early draft)", "https://w3c-cg.github.io/atp/specs/atp-conformance/"]],
+    ver: "CG draft inputs (ReSpec unofficial), unversioned; not yet adopted as CG Reports", stage: 1, ev: 2,
+    evnote: "Backed by a runnable reference implementation and conformance suite. An outside implementer reproduced all eleven did:atp identifier and pairwise-derivation vectors with a separate Python implementation (ATP CG issue #8, 16 Nov 2026); the chair describes this as limited evidence for those capabilities, not full DID-method conformance. AIKR demonstration (issue #29) is contributor-run.",
+    cov: { id: 2, iface: 2, auth: 1, pol: 1, par: 0, life: 2, ev: 1 } },
+  { tier: "core", name: "MCP-I and KYA-OS", venue: "DIF Trusted AI Agents WG (donated by Vouched)",
+    what: "Model Context Protocol – Identity adds an identity and delegation layer to MCP, so a service can verify an agent's identity, delegation authority and permission scope before a tool call. KYA-OS extends DIF identity standards across agentic protocols.",
+    drafts: [["MCP-I / KYA-OS site", "https://modelcontextprotocol-identity.io"], ["DIF Trusted AI Agents WG", "https://identity.foundation/working-groups/trusted-agents"], ["Contribution announcement", "https://blog.identity.foundation/kya-os/"]],
+    ver: "Contributed March 2026; version and status not stated", stage: 2, ev: 1,
+    evnote: "DIF lists a KYA-OS MCP reference implementation covering delegation, proof generation, session lifecycle and cryptographic identity. No published conformance results found.",
+    cov: { id: 2, iface: 2, auth: 2, pol: 0, par: 1, life: 1, ev: 0 } },
+  { tier: "core", name: "WIMSE AI Identity Management System", venue: "IETF WIMSE working group",
+    what: "Working-group draft on identity management for AI agents within the WIMSE workload identity architecture. Individual drafts in the same group extend workload identity and delegation chains to agents.",
+    drafts: [["draft-ietf-wimse-aims", "https://datatracker.ietf.org/doc/draft-ietf-wimse-aims/"], ["draft-ni-wimse-ai-agent-identity", "https://datatracker.ietf.org/doc/draft-ni-wimse-ai-agent-identity/"], ["WIMSE documents", "https://datatracker.ietf.org/wg/wimse/documents/"]],
+    ver: "-01, 2 Nov 2026 (WG document, Informational)", stage: 2, ev: 0,
+    evnote: "The underlying WIMSE HTTP signature draft is with the IESG for Proposed Standard; the AI draft itself has no published test results.",
+    cov: { id: 2, iface: 2, auth: 1, pol: 0, par: 0, life: 1, ev: 0 } },
+  { tier: "core", name: "Web Bot Auth", venue: "IETF Web Bot Auth working group",
+    what: "Standards-track work to authenticate automated clients, including AI agents, to sites that serve humans, and to convey more about a bot through an existing identifier such as a domain name. HTTP-signature protocol adopted; key directory, registry and signed agent metadata drafts filed individually.",
+    drafts: [["draft-ietf-webbotauth-httpsig-protocol", "https://datatracker.ietf.org/doc/draft-ietf-webbotauth-httpsig-protocol/"], ["WG documents", "https://datatracker.ietf.org/wg/webbotauth/documents/"]],
+    ver: "-01 (WG document); related individual drafts -00 to -05", stage: 2, ev: 0,
+    evnote: "No conformance results on the working-group pages.",
+    cov: { id: 1, iface: 2, auth: 0, pol: 0, par: 1, life: 0, ev: 0 } },
+  { tier: "core", name: "ODIS — Open Delegation & Identity Standard", venue: "Coalition for Secure AI (CoSAI) Workstream 4, OASIS Open Project",
+    what: "Delegated user identity, agent code or package identity, agent runtime instance identity and cascaded multi-agent delegation, in three layers (Passport, Bridge, Router), extending OAuth 2.0, OpenID Connect, SPIFFE and SCIM.",
+    drafts: [["ws4-odis repository", "https://github.com/cosai-oasis/ws4-odis"], ["Announcement", "https://www.coalitionforsecureai.org/?p=1675"]],
+    ver: "No version or status label in the repository", stage: 1, ev: 1,
+    evnote: "Candidate Router implementation (contract-harness: MCP policy forwarder gated by OPA). No published results.",
+    cov: { id: 2, iface: 1, auth: 2, pol: 1, par: 2, life: 0, ev: 0 } },
+  { tier: "core", name: "AuthZEN agent authorization drafts (AARP, COAZ)", venue: "OpenID Foundation AuthZEN working group",
+    what: "Standard mechanisms, protocols and formats for passing authorization information between components, built on existing architectures. The Authorization API 1.0 became a Final Specification in January 2026; the group announced new drafts for agent-era authorization in June 2026, including COAZ for securing APIs and AI agents.",
+    drafts: [["AuthZEN working group", "https://openid.net/wg/authzen/"], ["Agentic Standards Map entry", "https://frmoretto.github.io/agentic-standards-map/entries/oidf-authzen-agents.html"]],
+    ver: "Authorization API 1.0 Final (Jan 2026); agent drafts 2026, status not listed", stage: 2, ev: 0,
+    evnote: "Conformance certification for decision points is in development. AMEP binds to AuthZEN for its decisions.",
+    cov: { id: 0, iface: 1, auth: 2, pol: 2, par: 0, life: 0, ev: 0 } },
+  { tier: "core", name: "UCP — Universal Commerce Protocol", venue: "UCP Governing Council (Google and Shopify permanent seats, three elected)",
+    what: "Agentic commerce protocol in which checkout responses and order webhooks are signed. The platform publishes its keys in a /.well-known/ucp profile and agent signatures point to it, following Web Bot Auth.",
+    drafts: [["UCP repository", "https://github.com/Universal-Commerce-Protocol/ucp"], ["Agentic Standards Map entry", "https://frmoretto.github.io/agentic-standards-map/entries/ucp.html"]],
+    ver: "Latest release v2026-08-25", stage: 3, ev: 0,
+    evnote: "Its Web Bot Auth interop example follows draft -00; a verifier built to draft-ietf-webbotauth-httpsig-protocol-01 would drop the member (reported as UCP issue #1080, Nov 2026).",
+    cov: { id: 1, iface: 2, auth: 1, pol: 0, par: 0, life: 0, ev: 1 } },
+  { tier: "draft", name: "AMEP — Agentic Mandate Evidence Protocol", venue: "Individual Internet-Draft · contributed to the W3C Agent Identity CG",
+    what: "Portable signed evidence that an agent's actions stayed within the authority a person delegated, traced from mandate through delegations and invocations to an observed effect. Each check returns preserved, violated or unresolved, and missing evidence never counts as permission.",
+    drafts: [["AMEP v0.2 specification", "https://github.com/stafordtituss/amep/blob/main/spec/amep-v0.2.md"], ["draft-stafordtituss-agentic-mandate-evidence", "https://datatracker.ietf.org/doc/draft-stafordtituss-agentic-mandate-evidence/"], ["Delegation-continuity use case", "https://github.com/stafordtituss/amep/blob/main/interop/w3c-agent-identity/delegation-continuity/USE-CASE.md"]],
+    ver: "v0.2.0-draft.4; spec under Community Specification License 1.0", stage: 1, ev: 1,
+    evnote: "Conformance vectors with Python and JavaScript verifiers from the same author; 20 delegation vectors mapped to ARIA sections 4, 6 and 7 offered to the Agent Identity CG (list post, 17 Nov 2026). Name and conformance mark are the author's trademarks.",
+    cov: { id: 0, iface: 1, auth: 2, pol: 1, par: 1, life: 2, ev: 2 } },
+  { tier: "draft", name: "AAE — Agent Authorization Envelope", venue: "Individual Internet-Draft · MolTrust / CryptoKRI",
+    what: "Three mandatory blocks (MANDATE, CONSTRAINTS, VALIDITY) forming a machine-evaluable, signed authorization assertion bound to W3C DIDs and Verifiable Credentials. Part of the MolTrust Protocol.",
+    drafts: [["draft-kroehl-agentic-trust-aae-02", "https://www.ietf.org/archive/id/draft-kroehl-agentic-trust-aae-02.html"], ["MolTrust TechSpec v0.5", "https://moltrust.ch/MolTrust_Protocol_TechSpec_v0.5.pdf"]],
+    ver: "-02, September 2026; TechSpec v0.5, March 2026", stage: 1, ev: 1,
+    evnote: "The draft states it derives from a production deployment running since March 2026.",
+    cov: { id: 1, iface: 0, auth: 2, pol: 2, par: 0, life: 2, ev: 1 } },
+  { tier: "draft", name: "APS — Agent Passport System", venue: "Individual Internet-Draft · Agent Authority Conformance lab",
+    what: "Identifying agents, narrowing delegated authority at each transfer, admitting actions at an enforcement boundary, and recording signed evidence of what was decided and observed.",
+    drafts: [["draft-pidlisnyi-aps-04", "https://datatracker.ietf.org/doc/draft-pidlisnyi-aps/"], ["APS conformance suite", "https://github.com/Agent-Authority-Conformance/aps-conformance-suite"]],
+    ver: "-04, 28 Sep 2026; conformance corpus v0.1.0", stage: 1, ev: 1,
+    evnote: "Corpus of 96 byte-level vectors in 13 files with cross-stack fixtures from outside parties; the repository itself says this is a seed and not yet independent conformance.",
+    cov: { id: 2, iface: 0, auth: 2, pol: 1, par: 0, life: 1, ev: 2 } },
+  { tier: "draft", name: "NTI-1 — Neutral Trust Infrastructure", venue: "NTI Foundation · discussed on the AI Agent Protocol CG list; LF Decentralized Trust hosting proposed",
+    what: "Principal-bound identity with post-quantum signatures, a capability model with caveats (expiry, execution, value and path limits), Byzantine fault-tolerant consensus for multi-agent decisions, and Merkle-chained audit logs.",
+    drafts: [["nti-spec repository", "https://github.com/abisheakp197/nti-spec"]],
+    ver: "v1.0.0 marked draft, CC BY 4.0", stage: 1, ev: 1,
+    evnote: "Conformance folder with JSON examples and a validator script; SDK on PyPI. Founding steering committee for an LFDT proposal was still forming in early November per the list.",
+    cov: { id: 2, iface: 0, auth: 2, pol: 2, par: 1, life: 1, ev: 2 } },
+  { tier: "draft", name: "RTTP and IQA URI schemes", venue: "Individual Internet-Draft, Independent Submission",
+    what: "Two linked URI schemes: rttp names an intended action directed at a subject, iqa names whether that subject's attestation standing holds. Both derive addresses locally without lookups.",
+    drafts: [["draft-li-rttp-iqa-addressing-02", "https://datatracker.ietf.org/doc/draft-li-rttp-iqa-addressing/"]],
+    ver: "-02, 1 Nov 2026, Informational, experimental schemes", stage: 1, ev: 2,
+    evnote: "The author reports a clean-room recomputation over the frozen vectors and an independent reproduction of the runner, recorded in the Agent Authority Conformance lab (list post, 1 Nov 2026).",
+    cov: { id: 1, iface: 1, auth: 1, pol: 0, par: 0, life: 2, ev: 1 } },
+  { tier: "draft", name: "ANP — Agent Network Protocol (did:wba)", venue: "Open-source project",
+    what: "Agent communication protocol with a web-based DID identity layer (did:wba, Ed25519 binding), handle naming, agent description, discovery, end-to-end messaging and payments. Discussed on the AI Agent Protocol CG list alongside NTI and ATP.",
+    drafts: [["ANP repository", "https://github.com/agent-network-protocol/AgentNetworkProtocol"]],
+    ver: "ANP-03 did:wba released v1.1; ANP-02 DID authentication still draft", stage: 3, ev: 0,
+    evnote: "No standards-body track stated; no published conformance results found.",
+    cov: { id: 2, iface: 2, auth: 0, pol: 0, par: 0, life: 0, ev: 0 } },
+  { tier: "draft", name: "DID-based framework for MCP agents", venue: "Individual Internet-Draft · China Mobile",
+    what: "Service discovery, authentication and authorization for MCP agents using did:web and did:key, with a challenge-response identity exchange.",
+    drafts: [["draft-xu-mcp-agent-did-framework-00", "https://datatracker.ietf.org/doc/html/draft-xu-mcp-agent-did-framework"]],
+    ver: "-00, 15 Aug 2026, Informational", stage: 1, ev: 0, evnote: "Text only.",
+    cov: { id: 2, iface: 2, auth: 1, pol: 0, par: 0, life: 0, ev: 0 } },
+  { tier: "core", name: "AIVS — Agentic Integrity Verification Specification", venue: "W3C AIVS CG",
+    what: "Portable formats for cryptographic proof of agent sessions, so third parties can verify what an agent did and whether the record was altered.",
+    drafts: [["AIVS v1.0 (group intro)", "https://github.com/swarmsync-ai/aivs-spec"], ["AIVS.md (call for participation)", "https://github.com/bkauto3/Conduit/blob/main/spec/AIVS.md"]],
+    ver: "v1.0 offered as a starting point for discussion; two repositories cited", stage: 1, ev: 0, evnote: "Text only; canonical source unclear.",
+    cov: { id: 0, iface: 0, auth: 0, pol: 0, par: 0, life: 0, ev: 2 } },
+  { tier: "core", name: "KR for Trust (KRT) and AI Agent Trust Record", venue: "W3C AIKR CG",
+    what: "A representation layer: the KRT ontology and shapes for trust claims and evidence states, and a per-agent trust record (identity, interface, mandate, parties, trust assertion) aligned with AIAO. Used here as the frame for the coverage table.",
+    drafts: [["kroftrust.md", "https://github.com/w3c-cg/aikr/blob/main/trust/kroftrust.md"], ["krt.ttl", "https://github.com/w3c-cg/aikr/blob/main/trust/krt.ttl"], ["Trust record spec", "https://github.com/w3c-cg/aikr/blob/main/trust/trustvisualiser.html"]],
+    ver: "Draft for consultation until 1 Dec 2026; trust record CG-DRAFT", stage: 2, ev: 1,
+    evnote: "Implementation reports section lists contributor-run demonstrations; independent reruns invited.",
+    cov: { id: 2, iface: 2, auth: 2, pol: 2, par: 2, life: 1, ev: 1 } }
+];
+
+const COROLLARY = [
+  ["W3C", "AI Agent Protocol CG", "https://www.w3.org/community/agentprotocol/", "Umbrella group for agent protocols; venue for NTI, ANP, RTTP/IQA and APS discussions."],
+  ["W3C", "Agent Identity Registry Protocol CG", "https://www.w3.org/community/agent-identity/", "Hosts ARIA-inspired work; adopted landscape fields and test materials on 17 Nov 2026."],
+  ["W3C", "Agent Conformance and Benchmarking CG", "https://www.w3.org/community/agent-conformance/", "Reproducible methods for measuring agent systems; receives conformance records."],
+  ["W3C", "Semantic Agent Communication CG", "https://www.w3.org/community/s-agent-comm/", "Ontologies for agent messages, including delegation chains."],
+  ["W3C", "Introduction Layer CG", "https://www.w3.org/community/intro-layer/", "Resources declaring identity and responsible party to agents."],
+  ["W3C", "Agent-to-Web Framework CG", "https://www.w3.org/community/a2wf/", "Site governance policies for agent actions."],
+  ["W3C", "AI Judgement Event CG", "https://www.w3.org/community/aije/", "Responsibility receipts for AI-mediated decisions."],
+  ["W3C", "Agentic Arbitration Protocol CG", "https://www.w3.org/community/agentic-arbitration/", "Dispute formats between agents."],
+  ["W3C", "High Assurance Profile for VCDM 2.0 CG", "https://www.w3.org/community/vc-haip/", "Credential assurance that agents can rely on; launched 12 Nov 2026."],
+  ["W3C", "AI Computed Provenance CG", "https://www.w3.org/community/ai-computed-provenance/", "Provenance of AI-computed content; adjacent to evidence."],
+  ["W3C", "AI Agent Memory Interoperability CG", "https://www.w3.org/community/ai-agent-memory-interop/", "Portable memory with identity binding and revocable sharing."],
+  ["W3C", "Web & AI Interest Group", "https://github.com/w3c/webai", "Strategy-level discussion; issue #27 proposes work on identity and authority."],
+  ["LF Decentralized Trust", "Agent Authority Conformance lab", "https://github.com/Agent-Authority-Conformance", "Records evidence runs for APS, RTTP/IQA and others; records, does not certify."],
+  ["LF Decentralized Trust", "ToIP AI & Human Trust WG", "https://lf-toip.atlassian.net/wiki/spaces/HOME/pages/22982892", "Trust Spanning Protocol applied to human–AI interaction."],
+  ["OpenID Foundation", "AI Identity Management CG", "https://openid.net/cg/artificial-intelligence-identity-management-community-group/", "Use cases and whitepaper; protocol work deferred to OIDF working groups."],
+  ["IETF", "DAWN working group", "https://datatracker.ietf.org/doc/charter-ietf-dawn/", "Agent discovery only; identity management out of its initial scope."],
+  ["NIST", "NCCoE agent identity and authorization project", "https://pages.nist.gov/nccoe-ai-identity/", "Practice guide in preparation; first use case in software development."],
+  ["CoSAI", "Agentic Identity and Access Management framework", "https://www.coalitionforsecureai.org/wp-content/uploads/2026/04/agentic-identity-and-access-control.pdf", "Enterprise IAM guidance behind ODIS."],
+  ["OWASP", "Agentic Security Initiative", "https://genai.owasp.org/initiatives/agentic-security-initiative/", "Threat taxonomy; identity and privilege abuse among top risks."],
+  ["W3C", "Open KYA Manifest (ADACG)", "https://www.w3.org/community/adacg/", "Planned agent declaration schema; named in the charter, no draft yet."],
+  ["Agentic commerce", "Personal Agent Protocol (PAP)", "https://frmoretto.github.io/agentic-standards-map/entries/pap.html", "Sierra with Meta; draft 0.1, Apache 2.0; agent keys published on its own domain."],
+  ["Agentic commerce", "PACT — Personal Agent Consent & Trust Protocol", "https://frmoretto.github.io/agentic-standards-map/entries/pact.html", "Decagon with Instinct; version 1.0, Apache 2.0; provider decides which agent key sets to accept."],
+  ["Agentic commerce", "Visa Trusted Agent Protocol", "https://frmoretto.github.io/agentic-standards-map/entries/visa-tap.html", "Specification and sample code under Visa product terms; not an open specification."],
+  ["Agentic commerce", "KYAPay (Skyfire)", "https://frmoretto.github.io/agentic-standards-map/entries/kyapay.html", "Individual OAuth Internet-Drafts; issuer keys trusted by prior configuration; no working-group adoption."],
+  ["Agentic commerce", "x402", "https://frmoretto.github.io/agentic-standards-map/entries/x402.html", "Payment protocol under the x402 Foundation (Linux Foundation); its message-signature extension reuses Web Bot Auth keys."],
+  ["Agentic AI Foundation", "AAIF Identity and Trust group", "https://frmoretto.github.io/agentic-standards-map/entries/aaif-identity-trust.html", "Group to watch; no specification status published."],
+  ["Map", "Agentic Standards Map", "https://frmoretto.github.io/agentic-standards-map/", "Francesco Marinoni Moretto's CC BY 4.0 map of agentic commerce standards, source for the commerce entries here."],
+  ["Company", "agent.bar", "https://agent.bar", "Credential issuer built on ARIA."],
+  ["Company", "AgentAvow", "https://agentavow.com", "Signed trust results for tools and MCP servers agents connect to."],
+  ["Company", "DEUSPROOF", "https://deusproof.com", "Append-only registry with timestamped agent records and an open verifier."],
+  ["Company", "MolTrust", "https://moltrust.ch", "DID-based agent identity and MolCheck mandate verification; source of AAE."]
+];
+
+const state = { q: "", stage: "All", ev: "All", cov: "All" };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function chips(id, key, values) {
+  const el = document.getElementById(id);
+  values.forEach(v => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button"; b.textContent = v;
+    b.setAttribute("aria-pressed", v === state[key] ? "true" : "false");
+    b.addEventListener("click", () => {
+      state[key] = v;
+      el.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === b ? "true" : "false"));
+      render();
+    });
+    el.appendChild(b);
+  });
+}
+
+function keep(d) {
+  if (state.stage !== "All" && STAGES[d.stage] !== state.stage) return false;
+  if (state.ev !== "All" && EVS[d.ev] !== state.ev) return false;
+  if (state.cov !== "All") { const k = COLS.find(c => c[1] === state.cov)[0]; if (d.cov[k] < 2) return false; }
+  if (state.q) { const h = [d.name, d.venue, d.what, d.ver, d.evnote, d.drafts.map(x => x[0]).join(" ")].join(" ").toLowerCase(); if (!h.includes(state.q.toLowerCase())) return false; }
+  return true;
+}
+
+function render() {
+  const rows = CORE.filter(keep);
+  document.getElementById("count").textContent = `${rows.length} of ${CORE.length} specifications`;
+  const row = d => `<tr>
+    <td class="spec" data-l="Specification"><span class="venue">${esc(d.venue)}</span><strong>${esc(d.name)}</strong><p>${esc(d.what)}</p></td>
+    <td class="draft" data-l="Draft and version">${d.drafts.map(([t, u]) => `<a href="${esc(u)}">${esc(t)}</a>`).join("")}<span class="ver">${esc(d.ver)}</span></td>
+    <td data-l="Text stage"><span class="stage s${d.stage}">${STAGES[d.stage]}</span></td>
+    <td data-l="Evidence"><span class="ev e${d.ev}">${EVS[d.ev]}</span><span class="evnote">${esc(d.evnote)}</span></td>
+  </tr>`;
+  for (const [id, t] of [["#core-table", "core"], ["#draft-table", "draft"]]) {
+    const r = rows.filter(d => d.tier === t);
+    document.querySelector(id + " tbody").innerHTML = r.length ? r.map(row).join("") : `<tr><td colspan="4" class="empty">Nothing matches these filters.</td></tr>`;
+  }
+  const sym = v => v === 2 ? `<span class="dot2" aria-label="specified">●</span>` : v === 1 ? `<span class="dot1" aria-label="partial">◐</span>` : `<span class="dot0" aria-label="not addressed">○</span>`;
+  const mrow = d => `<tr><td>${esc(d.name.split(" — ")[0])}</td>${COLS.map(([k]) => `<td class="c">${sym(d.cov[k])}</td>`).join("")}</tr>`;
+  const head = t => `<tr><td colspan="8" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:#ebe8e1">${t}</td></tr>`;
+  const c = rows.filter(d => d.tier === "core"), dr = rows.filter(d => d.tier === "draft");
+  document.querySelector("#matrix tbody").innerHTML = (c.length ? head("Core") + c.map(mrow).join("") : "") + (dr.length ? head("Individual drafts") + dr.map(mrow).join("") : "");
+}
+
+chips("f-stage", "stage", ["All", ...STAGES.slice(0, 4)]);
+chips("f-ev", "ev", ["All", ...EVS]);
+chips("f-cov", "cov", ["All", ...COLS.map(c => c[1])]);
+document.getElementById("q").addEventListener("input", e => { state.q = e.target.value.trim(); render(); });
+document.getElementById("corollary-list").innerHTML = COROLLARY.map(([k, n, u, s]) =>
+  `<div><span class="k">${esc(k)}</span><br><a href="${esc(u)}">${esc(n)}</a><p>${esc(s)}</p></div>`).join("");
+render();
+}
+</script>
+</body>
+</html>
